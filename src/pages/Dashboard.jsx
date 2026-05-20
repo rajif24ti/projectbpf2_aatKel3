@@ -23,9 +23,9 @@ export default function Dashboard() {
 
   // Data Representasi dari DataSekolah.jsx (Kemitraan/Instansi Magang)
   const [dataSekolah] = useState([
-    { id: 1, namaSekolah: 'SMKN 1 Pekanbaru', jumlahSiswaMagang: 4, statusKemitraan: 'Aktif' },
-    { id: 2, namaSekolah: 'SMKN 2 Pekanbaru', jumlahSiswaMagang: 2, statusKemitraan: 'Aktif' },
-    { id: 3, namaSekolah: 'SMKN 5 Pekanbaru', jumlahSiswaMagang: 0, statusKemitraan: 'Selesai' },
+    { id: 1, namaSekolah: 'SMKN 1 Pekanbaru', jumlahSiswa: 4, statusKemitraan: 'Aktif' },
+    { id: 2, namaSekolah: 'SMKN 2 Pekanbaru', jumlahSiswa: 2, statusKemitraan: 'Aktif' },
+    { id: 3, namaSekolah: 'SMKN 5 Pekanbaru', jumlahSiswa: 0, statusKemitraan: 'Selesai' },
   ]);
 
   // Data Representasi dari KotakSaran.jsx & Laporan.jsx
@@ -47,7 +47,7 @@ export default function Dashboard() {
   const totalVolumeProduksi = dataProduksi.reduce((acc, item) => acc + item.jumlah, 0);
 
   // Modul Data Sekolah
-  const totalSiswaMagang = dataSekolah.reduce((acc, school) => acc + school.jumlahSiswaMagang, 0);
+  const totalSiswaMagang = dataSekolah.reduce((acc, school) => acc + school.jumlahSiswa, 0);
 
   // Modul Kotak Saran / Laporan Isu Pending
   const laporanIsuPending = dataLaporan.filter(item => item.status === 'Perlu Tindak Lanjut').length;
