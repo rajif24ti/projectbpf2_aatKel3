@@ -115,7 +115,7 @@ export default function Dashboard() {
         {/* KARTU 3: MODUL DATA SEKOLAH (DataSekolah.jsx) */}
         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl p-5 border border-gray-100 dark:border-gray-700/60">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Siswa Magang / PKL</h2>
+            <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Siswa</h2>
             <div className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-lg">
               <svg className="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
