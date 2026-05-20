@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 
-// Import CSS yang sama agar styling konsisten
 import "../css/style.css";
 import Banner from "../components/Banner";
 
 export default function AuthLayout() {
   const location = useLocation();
 
-  // Efek scroll to top yang sama dengan MainLayout
   useEffect(() => {
     const html = document.querySelector("html");
     html.style.scrollBehavior = "auto";
@@ -17,39 +15,39 @@ export default function AuthLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
-      {/* Konten Utama */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        
-        <main className="grow">
-          <div className="flex flex-col min-h-screen justify-center items-center px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            
-            {/* Card Container yang mirip dengan gaya template */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200">
-              {/* Logo / Brand Section */}
-              <div className="flex items-center justify-center mb-6">
-                <h1 className="text-4xl font-poppins font-extrabold text-gray-800">
-                  <span className="text-black">MBG</span>
-                  <span className="text-green-500">.</span>
-                </h1>
-              </div>
+    <div className="relative flex min-h-screen bg-gray-100 dark:bg-gray-900 justify-center items-center px-4 sm:px-6 lg:px-8 py-12 overflow-hidden">
+      
+      {/* Ornamen Latar Belakang (Disamakan dengan PageHeader) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
+      <div className="absolute -right-10 -top-10 w-64 h-64 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
-              {/* Tempat Form Login / Register (Outlet) */}
-              <Outlet />
-
-              {/* Footer di dalam card */}
-              <p className="text-center text-sm text-gray-400 mt-6 pt-6 border-t border-gray-100">
-                © 2026 Sistem Informasi MBG Admin Dashboard. <br />
-                All rights reserved.
-              </p>
-            </div>
-
+      {/* Container Card Login */}
+      <div className="w-full max-w-md relative z-10">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700/60">
+          
+          {/* Header Identitas */}
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-poppins font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">
+              MBG<span className="text-violet-500">.</span>
+            </h1>
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300 mt-2 tracking-wide uppercase">
+              Sistem Informasi Pengolahan
+            </span>
           </div>
-        </main>
 
-        {/* Banner jika ingin ditampilkan di halaman auth juga */}
-        <Banner />
+          {/* Form Render Outlet */}
+          <Outlet />
+
+          {/* Footer Card */}
+          <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6 pt-6 border-t border-gray-100 dark:border-gray-700/60">
+            © 2026 Sistem Informasi MBG. <br />
+            All rights reserved.
+          </p>
+        </div>
       </div>
+
+      <Banner />
     </div>
   );
 }

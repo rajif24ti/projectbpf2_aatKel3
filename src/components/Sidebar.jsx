@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar({
   sidebarOpen,
@@ -8,6 +8,7 @@ function Sidebar({
 }) {
   const trigger = useRef(null);
   const sidebar = useRef(null);
+  const navigate = useNavigate();
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -45,41 +46,49 @@ function Sidebar({
     }
   }, [sidebarExpanded]);
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
+  // Styling Menu yang dipercantik dengan Shadow, Border, dan Skala Mikro
   const menuClass = ({ isActive }) =>
-    `flex items-center gap-4 px-4 py-3 rounded-lg transition duration-150 ${
+    `flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 active:scale-98 text-sm font-medium ${
       isActive
-        ? "bg-violet-100 text-violet-600 font-semibold dark:bg-violet-500/20 dark:text-violet-400"
-        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-gray-700"
+        ? "bg-violet-500 text-white shadow-md shadow-violet-500/20 border border-violet-400/20 dark:bg-violet-600 dark:shadow-violet-600/30"
+        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-gray-700/50"
     }`;
 
+  // Ikon menyesuaikan warna teks menu (bawaan fill-current)
   const iconClass = (isActive) =>
-    `shrink-0 fill-current ${
-      isActive
-        ? "text-violet-600 dark:text-violet-400"
-        : "text-gray-400 dark:text-gray-500"
+    `shrink-0 fill-current w-5 h-5 transition-transform duration-200 ${
+      isActive ? "text-white scale-105" : "text-gray-400 dark:text-gray-500"
     }`;
 
   return (
     <div className="min-w-fit">
-
+      {/* Backdrop overlay untuk mobile view */}
       <div
-        className={`fixed inset-0 bg-gray-900/30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+        className={`fixed inset-0 bg-gray-900/40 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-200 ${
           sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden="true"
       ></div>
 
+      {/* Kontainer Utama Sidebar dengan sentuhan Glassmorphism */}
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:flex! flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:w-64! shrink-0 bg-white dark:bg-gray-800 p-4 transition-all duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-64"} ${variant === 'v2' ? 'border-r border-gray-200 dark:border-gray-700/60' : 'rounded-r-2xl shadow-xs'}`}
+        className={`flex lg:flex! flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-66 lg:w-22 lg:sidebar-expanded:!w-66 2xl:w-66! shrink-0 bg-white/80 dark:bg-gray-800/70 backdrop-blur-md p-4 transition-all duration-200 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-64"
+        } ${variant === 'v2' ? 'border-r border-gray-200/80 dark:border-gray-700/50' : 'rounded-r-2xl border-r border-gray-100 dark:border-gray-700/30 shadow-lg shadow-gray-200/20 dark:shadow-none'}`}
       >
-
-        <div className="flex justify-between mb-10 pr-3 sm:px-2">
-
+        {/* Bagian Atas: Tombol Close Mobile & Logo Dashboard */}
+        <div className="flex items-center justify-between mb-8 px-2 pt-2">
           <button
             ref={trigger}
-            className="lg:hidden text-gray-500 hover:text-gray-400"
+            className="lg:hidden text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}
@@ -90,35 +99,39 @@ function Sidebar({
             </svg>
           </button>
 
-          <NavLink end to="/" className="block">
-            <svg className="fill-violet-500" xmlns="http://www.w3.org/2000/svg" width={32} height={32}>
-              <path d="M31.956 14.8C31.372 6.92 25.08.628 17.2.044V5.76a9.04 9.04 0 0 0 9.04 9.04h5.716ZM14.8 26.24v5.716C6.92 31.372.63 25.08.044 17.2H5.76a9.04 9.04 0 0 1 9.04 9.04Zm11.44-9.04h5.716c-.584 7.88-6.876 14.172-14.756 14.756V26.24a9.04 9.04 0 0 1 9.04-9.04ZM.044 14.8C.63 6.92 6.92.628 14.8.044V5.76a9.04 9.04 0 0 1-9.04 9.04H.044Z" />
-            </svg>
+          {/* Logo dengan wadah lingkaran gradien estetik */}
+          <NavLink end to="/dashboard" className="group flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-500 to-indigo-500 flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:scale-105 transition duration-200">
+              <svg className="fill-white" xmlns="http://www.w3.org/2000/svg" width={22} height={22}>
+                <path d="M31.956 14.8C31.372 6.92 25.08.628 17.2.044V5.76a9.04 9.04 0 0 0 9.04 9.04h5.716ZM14.8 26.24v5.716C6.92 31.372.63 25.08.044 17.2H5.76a9.04 9.04 0 0 1 9.04 9.04Zm11.44-9.04h5.716c-.584 7.88-6.876 14.172-14.756 14.756V26.24a9.04 9.04 0 0 1 9.04-9.04ZM.044 14.8C.63 6.92 6.92.628 14.8.044V5.76a9.04 9.04 0 0 1-9.04 9.04H.044Z" />
+              </svg>
+            </div>
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+              SIP - MBG<span className="text-violet-500">.</span>
+            </span>
           </NavLink>
-
         </div>
 
-        <div className="space-y-8">
+        {/* Daftar Navigasi Utama */}
+        <div className="space-y-6 flex-1 px-1">
           <div>
-            <h3 className="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
-              <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">
-                •••
+            {/* Header Kategori Menu dengan pemisah garis tipis */}
+            <div className="flex items-center gap-2 mb-4 px-3">
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                Menu Utama
               </span>
-              <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                Menu MBG
-              </span>
-            </h3>
+              <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
+            </div>
 
-            <ul className="mt-3 space-y-2">
-
+            <ul className="space-y-1.5">
               <li>
                 <NavLink end to="/dashboard" className={menuClass}>
                   {({ isActive }) => (
                     <>
-                      <svg className={iconClass(isActive)} width="16" height="16" viewBox="0 0 16 16">
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
                         <path d="M2 2h6v6H2V2Zm0 8h6v4H2v-4Zm8-8h4v4h-4V2Zm0 6h4v6h-4V8Z" />
                       </svg>
-                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Dashboard
                       </span>
                     </>
@@ -130,10 +143,10 @@ function Sidebar({
                 <NavLink to="/absensi" className={menuClass}>
                   {({ isActive }) => (
                     <>
-                      <svg className={iconClass(isActive)} width="16" height="16" viewBox="0 0 16 16">
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
                         <path d="M8 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.31 0-6 1.79-6 4v1h12v-1c0-2.21-2.69-4-6-4Z" />
                       </svg>
-                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Absensi
                       </span>
                     </>
@@ -145,10 +158,10 @@ function Sidebar({
                 <NavLink to="/bahan-baku" className={menuClass}>
                   {({ isActive }) => (
                     <>
-                      <svg className={iconClass(isActive)} width="16" height="16" viewBox="0 0 16 16">
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
                         <path d="M2 1h12v3H2V1Zm1 5h10l-1 9H4L3 6Z" />
                       </svg>
-                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Bahan Baku
                       </span>
                     </>
@@ -160,10 +173,10 @@ function Sidebar({
                 <NavLink to="/produksi" className={menuClass}>
                   {({ isActive }) => (
                     <>
-                      <svg className={iconClass(isActive)} width="16" height="16" viewBox="0 0 16 16">
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
                         <path d="M4 1h8v3H4V1Zm-1 5h10v9H3V6Zm3 2v5h2V8H6Zm4 0v5h2V8h-2Z" />
                       </svg>
-                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Produksi
                       </span>
                     </>
@@ -175,29 +188,53 @@ function Sidebar({
                 <NavLink to="/laporan" className={menuClass}>
                   {({ isActive }) => (
                     <>
-                      <svg className={iconClass(isActive)} width="16" height="16" viewBox="0 0 16 16">
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
                         <path d="M3 1h8l3 3v11H3V1Zm7 1.5V5h2.5L10 2.5ZM5 8h6V7H5v1Zm0 3h6v-1H5v1Zm0 3h4v-1H5v1Z" />
                       </svg>
-                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Laporan
                       </span>
                     </>
                   )}
                 </NavLink>
               </li>
+            </ul>
 
+            {/* Kategori Keluar */}
+            <div className="flex items-center gap-2 mt-6 mb-3 px-3">
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                Sesi
+              </span>
+              <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
+            </div>
+
+            <ul>
+              <li>
+                <button 
+                  onClick={handleLogout} 
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 dark:hover:text-red-400 transition-all duration-150 active:scale-98 text-sm font-medium"
+                >
+                  <svg className="shrink-0 fill-current text-red-400 dark:text-red-500 w-5 h-5" viewBox="0 0 16 16">
+                    <path d="M11 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9h-2v4H3V3h8v4h2V3a2 2 0 0 0-2-2Zm2.5 6H7v2h6.5l-2 2 1.4 1.4 4.3-4.4-4.3-4.4-1.4 1.4 2 2Z" />
+                  </svg>
+                  <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                    Logout
+                  </span>
+                </button>
+              </li>
             </ul>
           </div>
         </div>
 
+        {/* Bagian Bawah: Tombol Collapse (Kecilkan/Lebarkan Sidebar) */}
         <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
           <div className="w-12 pl-4 pr-3 py-2">
             <button
-              className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 bg-gray-50 dark:bg-gray-700/30 w-8 h-8 rounded-lg flex items-center justify-center border border-gray-100 dark:border-gray-700/50 shadow-xs transition"
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
             >
               <span className="sr-only">Expand / collapse sidebar</span>
-              <svg className="shrink-0 fill-current text-gray-400 dark:text-gray-500 sidebar-expanded:rotate-180" width="16" height="16" viewBox="0 0 16 16">
+              <svg className="shrink-0 fill-current text-gray-400 dark:text-gray-500 sidebar-expanded:rotate-180 w-4 h-4" viewBox="0 0 16 16">
                 <path d="M15 16a1 1 0 0 1-1-1V1a1 1 0 1 1 2 0v14a1 1 0 0 1-1 1ZM8.586 7H1a1 1 0 1 0 0 2h7.586l-2.793 2.793a1 1 0 1 0 1.414 1.414l4.5-4.5A.997.997 0 0 0 12 8.01M11.924 7.617a.997.997 0 0 0-.217-.324l-4.5-4.5a1 1 0 0 0-1.414 1.414L8.586 7M12 7.99a.996.996 0 0 0-.076-.373Z" />
               </svg>
             </button>
