@@ -162,7 +162,7 @@ export default function Dashboard() {
       {/* GRAPHICS & VISUALIZATION PANELS (Bar Chart, Recent Activity, dll) */}
       {/* <div className="grid grid-cols-12 gap-6">
         <DashboardCard10 />
-        <DashboardCard12 />
+        <DashboardCard12 da/>
         <DashboardCard13 />
       </div> */}
     </>
