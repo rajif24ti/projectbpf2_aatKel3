@@ -154,15 +154,16 @@ function Sidebar({
                 </NavLink>
               </li>
 
+              {/* PERUBAHAN: Bahan Baku -> Data Karyawan */}
               <li>
-                <NavLink to="/bahan-baku" className={menuClass}>
+                <NavLink to="/data-karyawan" className={menuClass}>
                   {({ isActive }) => (
                     <>
                       <svg className={iconClass(isActive)} viewBox="0 0 16 16">
-                        <path d="M2 1h12v3H2V1Zm1 5h10l-1 9H4L3 6Z" />
+                        <path d="M10.5 5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM0 13c0-2.33 3.58-4 8-4s8 1.67 8 4v2H0v-2Z" />
                       </svg>
                       <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                        Bahan Baku
+                        Data Karyawan
                       </span>
                     </>
                   )}
@@ -178,6 +179,38 @@ function Sidebar({
                       </svg>
                       <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Produksi
+                      </span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+
+              {/* PENAMBAHAN: Data Sekolah */}
+              <li>
+                <NavLink to="/data-sekolah" className={menuClass}>
+                  {({ isActive }) => (
+                    <>
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
+                        <path d="M8 1 0 5v1h1v8H0v1h16v-1h-1V6h1V5L8 1Zm3 12H5V6h6v7Z" />
+                      </svg>
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                        Data Sekolah
+                      </span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+
+              {/* PENAMBAHAN: Kotak Saran */}
+              <li>
+                <NavLink to="/kotak-saran" className={menuClass}>
+                  {({ isActive }) => (
+                    <>
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
+                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v9a1.5 1.5 0 0 1-1.5 1.5H4.5L1 15.5V2.5ZM2.5 2a.5.5 0 0 0-.5.5v10.38l1.88-1.88H13.5a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-11Z" />
+                      </svg>
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                        Kotak Saran
                       </span>
                     </>
                   )}

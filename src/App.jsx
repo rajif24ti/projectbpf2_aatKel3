@@ -3,13 +3,16 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import "./css/style.css";
 import "./charts/ChartjsConfig";
+import KotakSaran from "./pages/KotakSaran";
 
 // Lazy loading components
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
 const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Absensi = React.lazy(() => import("./pages/Absensi"));
-const BahanBaku = React.lazy(() => import("./pages/BahanBaku"));
+const DataKaryawan = React.lazy(() => import("./pages/DataKaryawan")); 
+const DataSekolah = React.lazy(() => import("./pages/DataSekolah"));   
+const KotakPesan = React.lazy(() => import("./pages/KotakSaran"));     
 const Produksi = React.lazy(() => import("./pages/Produksi"));
 const Laporan = React.lazy(() => import("./pages/Laporan"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
@@ -30,30 +33,31 @@ export default function App() {
   return (
     <Suspense 
       fallback={
-        <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
           <div className="flex flex-col items-center">
-            {/* Spinner sederhana */}
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500 mb-2"></div>
-            <div className="text-gray-500 text-sm font-medium">Memuat Halaman...</div>
+            {/* Spinner interaktif yang serasi */}
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-500 mb-2"></div>
+            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Memuat Halaman...</div>
           </div>
         </div>
       }
     >
       <Routes>
-        {/* Redirect dari root (/) ke login atau dashboard secara otomatis */}
+        {/* Redirect dari root (/) ke login secara otomatis */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Gruping rute Dashboard (MainLayout) */}
+        {/* Gruping rute Aplikasi Utama (MainLayout) */}
         <Route element={<MainLayout />}>
-          {/* Perbaikan typo 'lement' menjadi 'element' */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/absensi" element={<Absensi />} />
-          <Route path="/bahan-baku" element={<BahanBaku />} />
+          <Route path="/data-karyawan" element={<DataKaryawan />} />
+          <Route path="/data-sekolah" element={<DataSekolah />} />
+          <Route path="/kotak-saran" element={<KotakSaran />} />
           <Route path="/produksi" element={<Produksi />} />
           <Route path="/laporan" element={<Laporan />} />
         </Route>
 
-        {/* Gruping rute Auth (AuthLayout) */}
+        {/* Gruping rute Autentikasi (AuthLayout) */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
