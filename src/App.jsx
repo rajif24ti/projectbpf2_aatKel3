@@ -9,7 +9,11 @@ import KotakSaran from "./pages/KotakSaran";
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
 const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const Absensi = React.lazy(() => import("./pages/Absensi"));
+
+// PERUBAHAN: Lazy import untuk Absensi Masuk dan Absensi Pulang
+const AbsensiMasuk = React.lazy(() => import("./pages/AbsensiMasuk"));
+const AbsensiPulang = React.lazy(() => import("./pages/AbsensiPulang"));
+
 const DataKaryawan = React.lazy(() => import("./pages/DataKaryawan")); 
 const DataSekolah = React.lazy(() => import("./pages/DataSekolah"));   
 const KotakPesan = React.lazy(() => import("./pages/KotakSaran"));     
@@ -32,7 +36,7 @@ export default function App() {
 
   return (
     <Suspense 
-      fallback={
+      fallback = {
         <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
           <div className="flex flex-col items-center">
             {/* Spinner interaktif yang serasi */}
@@ -49,7 +53,11 @@ export default function App() {
         {/* Gruping rute Aplikasi Utama (MainLayout) */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/absensi" element={<Absensi />} />
+          
+          {/* PERUBAHAN: Routing pemisahan Absensi */}
+          <Route path="/absensi-masuk" element={<AbsensiMasuk />} />
+          <Route path="/absensi-pulang" element={<AbsensiPulang />} />
+          
           <Route path="/data-karyawan" element={<DataKaryawan />} />
           <Route path="/data-sekolah" element={<DataSekolah />} />
           <Route path="/kotak-saran" element={<KotakSaran />} />

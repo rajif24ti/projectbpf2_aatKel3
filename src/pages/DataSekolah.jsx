@@ -8,7 +8,6 @@ function DataSekolah() {
       npsn: "20103211",
       nama: "SDN 01 Pekanbaru",
       jenjang: "SD",
-      akreditasi: "A",
       jumlahSiswa: 340,
       alamat: "Jl. Pemuda No. 10, Pekanbaru",
     },
@@ -17,7 +16,6 @@ function DataSekolah() {
       npsn: "20104562",
       nama: "SDN 05 Merdeka",
       jenjang: "SD",
-      akreditasi: "A",
       jumlahSiswa: 210,
       alamat: "Jl. Merdeka Barat No. 45, Jakarta Pusat",
     },
@@ -26,7 +24,6 @@ function DataSekolah() {
       npsn: "20108923",
       nama: "SD Swasta Kartika",
       jenjang: "SD",
-      akreditasi: "B",
       jumlahSiswa: 185,
       alamat: "Jl. Jend. Sudirman Kav. 21, Jakarta Selatan",
     },
@@ -35,7 +32,6 @@ function DataSekolah() {
       npsn: "20107741",
       nama: "SMPN 12 Jakarta",
       jenjang: "SMP",
-      akreditasi: "A",
       jumlahSiswa: 520,
       alamat: "Jl. Wijaya Kebayoran Baru, Jakarta Selatan",
     },
@@ -50,24 +46,9 @@ function DataSekolah() {
     npsn: "",
     nama: "",
     jenjang: "",
-    akreditasi: "A",
     jumlahSiswa: "",
     alamat: "",
   });
-
-  // Fungsi pengondisian warna Badge Akreditasi
-  const getBadgeAkreditasi = (akreditasi) => {
-    switch (akreditasi) {
-      case "A":
-        return "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20";
-      case "B":
-        return "bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20";
-      case "C":
-        return "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20";
-      default:
-        return "bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-500/10 dark:text-gray-400 dark:border-gray-500/20";
-    }
-  };
 
   // Handler Input Form
   const handleInputChange = (e) => {
@@ -81,7 +62,6 @@ function DataSekolah() {
       id: null,
       npsn: "",
       nama: "",
-      akreditasi: "A",
       jumlahSiswa: "",
       alamat: "",
     });
@@ -109,7 +89,6 @@ function DataSekolah() {
       npsn: formData.npsn,
       nama: formData.nama,
       jenjang: formData.jenjang,
-      akreditasi: formData.akreditasi,
       jumlahSiswa: parseInt(formData.jumlahSiswa, 10),
       alamat: formData.alamat,
     };
@@ -154,8 +133,6 @@ function DataSekolah() {
                 "Manajemen data sekolah penerima distribusi program makanan bergizi (MBG)."}
               {viewMode === "create" &&
                 "Registrasi profile dan kuota data sekolah mitra baru."}
-              {viewMode === "edit" &&
-                "Pembaruan data kuota siswa atau akreditasi sekolah."}
             </p>
           </div>
 
@@ -192,7 +169,6 @@ function DataSekolah() {
                     <th className="p-4 w-32">NPSN</th>
                     <th className="p-4">Nama Sekolah</th>
                     <th className="p-4 text-center w-24">Jenjang</th>
-                    <th className="p-4 text-center w-28">Akreditasi</th>
                     <th className="p-4 text-center w-36">Jumlah Siswa</th>
                     <th className="p-4">Alamat Sekolah</th>
                     <th className="p-4 text-center w-28">Aksi</th>
@@ -227,13 +203,6 @@ function DataSekolah() {
                         <td className="p-4 text-center">
                           <span className="px-2 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-600">
                             {item.jenjang}
-                          </span>
-                        </td>
-                        <td className="p-4 text-center">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getBadgeAkreditasi(item.akreditasi)}`}
-                          >
-                            {item.akreditasi}
                           </span>
                         </td>
                         <td className="p-4 text-center font-medium text-gray-800 dark:text-gray-200">
@@ -361,26 +330,7 @@ function DataSekolah() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Field: Akreditasi */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Peringkat Akreditasi
-                  </label>
-                  <select
-                    name="akreditasi"
-                    value={formData.akreditasi}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
-                  >
-                    <option value="A">Terakreditasi A</option>
-                    <option value="B">Terakreditasi B</option>
-                    <option value="C">Terakreditasi C</option>
-                    <option value="Belum Terakreditasi">
-                      Belum Terakreditasi
-                    </option>
-                  </select>
-                </div>
-
+               
                 {/* Field: Jumlah Siswa */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">

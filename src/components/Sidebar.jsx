@@ -139,22 +139,38 @@ function Sidebar({
                 </NavLink>
               </li>
 
+              {/* PERUBAHAN: Menu Absensi dipisah menjadi Absensi Masuk */}
               <li>
-                <NavLink to="/absensi" className={menuClass}>
+                <NavLink to="/absensi-masuk" className={menuClass}>
                   {({ isActive }) => (
                     <>
                       <svg className={iconClass(isActive)} viewBox="0 0 16 16">
-                        <path d="M8 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.31 0-6 1.79-6 4v1h12v-1c0-2.21-2.69-4-6-4Z" />
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM4.5 7.5a.5.5 0 0 0 0 1h4.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L9.293 7.5H4.5Z" />
                       </svg>
                       <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                        Absensi
+                        Absensi Masuk
                       </span>
                     </>
                   )}
                 </NavLink>
               </li>
 
-              {/* PERUBAHAN: Bahan Baku -> Data Karyawan */}
+              {/* PERUBAHAN: Menu Absensi dipisah menjadi Absensi Pulang */}
+              <li>
+                <NavLink to="/absensi-pulang" className={menuClass}>
+                  {({ isActive }) => (
+                    <>
+                      <svg className={iconClass(isActive)} viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM11.5 7.5a.5.5 0 0 1 0 1H6.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L6.707 7.5h4.793Z" />
+                      </svg>
+                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                        Absensi Pulang
+                      </span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+
               <li>
                 <NavLink to="/data-karyawan" className={menuClass}>
                   {({ isActive }) => (
@@ -185,7 +201,6 @@ function Sidebar({
                 </NavLink>
               </li>
 
-              {/* PENAMBAHAN: Data Sekolah */}
               <li>
                 <NavLink to="/data-sekolah" className={menuClass}>
                   {({ isActive }) => (
@@ -201,7 +216,6 @@ function Sidebar({
                 </NavLink>
               </li>
 
-              {/* PENAMBAHAN: Kotak Saran */}
               <li>
                 <NavLink to="/kotak-saran" className={menuClass}>
                   {({ isActive }) => (
