@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 function DataKaryawan() {
   // 1. STATE UTAMA: Menyimpan data profil karyawan tim pengolahan
   const [dataKaryawan, setDataKaryawan] = useState([
-    { id: 1, nip: 'NIP1001', nama: 'Siti Aminah', jabatan: 'Supervisor Pengolahan', divisi: 'Produksi Utama', statusKerja: 'Aktif' },
-    { id: 2, nip: 'NIP1002', nama: 'Budi Santoso', jabatan: 'Operator Mesin Senior', divisi: 'Produksi Utama', statusKerja: 'Aktif' },
-    { id: 3, nip: 'NIP1003', nama: 'Rina Lestari', jabatan: 'Quality Control', divisi: 'Penjamin Mutu', statusKerja: 'Aktif' },
-    { id: 4, nip: 'NIP1004', nama: 'Agus Pratama', jabatan: 'Staf Logistik Bahan', divisi: 'Logistik & Gudang', statusKerja: 'Aktif' },
-    { id: 5, nip: 'NIP1005', nama: 'Dewi Kartika', jabatan: 'Operator Pengemasan', divisi: 'Finishing', statusKerja: 'Aktif' },
+    { id: 1, nip: 'NIP1001', nama: 'Siti Aminah', divisi: 'Produksi Utama', statusKerja: 'Aktif' },
+    { id: 2, nip: 'NIP1002', nama: 'Budi Santoso', divisi: 'Produksi Utama', statusKerja: 'Aktif' },
+    { id: 3, nip: 'NIP1003', nama: 'Rina Lestari', divisi: 'Penjamin Mutu', statusKerja: 'Aktif' },
+    { id: 4, nip: 'NIP1004', nama: 'Agus Pratama', divisi: 'Logistik & Gudang', statusKerja: 'Aktif' },
+    { id: 5, nip: 'NIP1005', nama: 'Dewi Kartika', divisi: 'Finishing', statusKerja: 'Aktif' },
   ]);
 
   // DATA MOCK INTEGRASI ABSENSI (Menghubungkan visual status real-time dengan komponen Absensi Anda)
@@ -27,7 +27,6 @@ function DataKaryawan() {
     id: null,
     nip: '',
     nama: '',
-    jabatan: '',
     divisi: '',
     statusKerja: 'Aktif'
   });
@@ -69,7 +68,7 @@ function DataKaryawan() {
 
   // Navigasi ke halaman Tambah Data Karyawan (Create)
   const openCreateMode = () => {
-    setFormData({ id: null, nip: '', nama: '', jabatan: '', divisi: '', statusKerja: 'Aktif' });
+    setFormData({ id: null, nip: '', nama: '',  divisi: '', statusKerja: 'Aktif' });
     setViewMode('create');
   };
 
@@ -87,7 +86,6 @@ function DataKaryawan() {
       id: formData.id || Date.now(),
       nip: formData.nip,
       nama: formData.nama,
-      jabatan: formData.jabatan,
       divisi: formData.divisi,
       statusKerja: formData.statusKerja
     };
@@ -125,7 +123,7 @@ function DataKaryawan() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {viewMode === 'index' && 'Manajemen profil master pegawai dan sinkronisasi status log kehadiran harian.'}
               {viewMode === 'create' && 'Pendaftaran data profil karyawan operasional baru.'}
-              {viewMode === 'edit' && 'Pembaruan informasi jabatan atau status kerja karyawan.'}
+              {viewMode === 'edit' && 'Pembaruan informasi divisi kerja karyawan.'}
             </p>
           </div>
 
@@ -152,7 +150,7 @@ function DataKaryawan() {
                     <th className="p-4 text-center w-12">No</th>
                     <th className="p-4">NIP</th>
                     <th className="p-4">Nama Lengkap</th>
-                    <th className="p-4">Jabatan / Divisi</th>
+                    <th className="p-4">Divisi</th>
                     <th className="p-4 text-center">Absensi Hari Ini</th>
                     <th className="p-4 text-center">Status Kerja</th>
                     <th className="p-4 text-center w-28">Aksi</th>
@@ -172,10 +170,7 @@ function DataKaryawan() {
                         <td className="p-4 text-center text-gray-400">{index + 1}</td>
                         <td className="p-4 font-mono text-xs font-semibold text-gray-600 dark:text-gray-400">{item.nip}</td>
                         <td className="p-4 font-semibold text-gray-800 dark:text-gray-100">{item.nama}</td>
-                        <td className="p-4">
-                          <div className="font-medium">{item.jabatan}</div>
-                          <div className="text-xs text-gray-400 dark:text-gray-500">{item.divisi}</div>
-                        </td>
+                        <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{item.divisi}</td>
                         {/* Kolom yang menyambung dengan data absensi */}
                         <td className="p-4 text-center">
                           {getAbsensiBadge(item.nama)}
@@ -257,19 +252,6 @@ function DataKaryawan() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Field: Jabatan */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Jabatan</label>
-                  <input
-                    type="text"
-                    name="jabatan"
-                    value={formData.jabatan}
-                    onChange={handleInputChange}
-                    placeholder="Contoh: Operator Produksi"
-                    required
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
-                  />
-                </div>
 
                 {/* Field: Divisi */}
                 <div>
@@ -282,10 +264,11 @@ function DataKaryawan() {
                     className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
                   >
                     <option value="">-- Pilih Divisi --</option>
-                    <option value="Produksi Utama">Produksi Utama</option>
-                    <option value="Penjamin Mutu">Penjamin Mutu (QC)</option>
-                    <option value="Logistik & Gudang">Logistik & Gudang</option>
-                    <option value="Finishing">Finishing / Packing</option>
+                    <option value="Pemersiapan">Pemersiapan</option>
+                    <option value="Pengolahan">Pengolahan</option>
+                    <option value="Pemorsian">Pemorsian</option>
+                    <option value="Distribusi">Distribusi</option>
+                    <option value="Pencucian">Pencucian</option>
                   </select>
                 </div>
               </div>
