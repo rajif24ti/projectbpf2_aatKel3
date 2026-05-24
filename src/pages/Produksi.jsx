@@ -62,7 +62,7 @@ function Produksi() {
 
   // Hitung Kalkulasi Agregat Secara Dinamis
   const totalProduksi = dataProduksi.reduce(
-    (total, item) => total + item.jumlah,
+    (total, item) => total + item.porsi,
     0,
   );
   const totalProses = dataProduksi.filter(
@@ -77,16 +77,16 @@ function Produksi() {
 
   // Navigasi ke Form Tambah Data (Create)
   const openCreateMode = () => {
-    // Set default tanggal dengan format ISO YYYY-MM-DD hari ini
     const hariIni = new Date().toISOString().split("T")[0];
+
     setFormData({
       id: null,
       tanggal: hariIni,
+      sekolah: "",
       menu: "",
-      jumlah: "",
-      bahanUtama: "",
-      status: "Proses",
+      porsi: "",
     });
+
     setViewMode("create");
   };
 
