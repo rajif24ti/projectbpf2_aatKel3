@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "tanggal": "2026-06-01",
+    "sekolah": "SDN 001 Pekanbaru",
+    "menu": "Nasi Ayam Sayur",
+    "porsi": 320,
+    "kalori": 650,
+    "protein": 28,
+    "karbohidrat": 85,
+    "lemak": 18,
+    "serat": 6
+  },
+  {
+    "id": 2,
+    "tanggal": "2026-06-01",
+    "sekolah": "SDN 037 Pekanbaru",
+    "menu": "Nasi Telur Balado",
+    "porsi": 280,
+    "kalori": 620,
+    "protein": 22,
+    "karbohidrat": 88,
+    "lemak": 16,
+    "serat": 5
+  },
+  {
+    "id": 3,
+    "tanggal": "2026-06-01",
+    "sekolah": "SMPN 04 Pekanbaru",
+    "menu": "Nasi Ikan Goreng",
+    "porsi": 450,
+    "kalori": 680,
+    "protein": 32,
+    "karbohidrat": 84,
+    "lemak": 20,
+    "serat": 6
+  },
+  {
+    "id": 4,
+    "tanggal": "2026-06-02",
+    "sekolah": "SMAN 08 Pekanbaru",
+    "menu": "Nasi Ayam Kecap",
+    "porsi": 500,
+    "kalori": 700,
+    "protein": 30,
+    "karbohidrat": 90,
+    "lemak": 19,
+    "serat": 5
+  },
+  {
+    "id": 5,
+    "tanggal": "2026-06-02",
+    "sekolah": "SMKN 02 Pekanbaru",
+    "menu": "Nasi Rendang",
+    "porsi": 620,
+    "kalori": 780,
+    "protein": 35,
+    "karbohidrat": 92,
+    "lemak": 25,
+    "serat": 4
+  },
+  {
+    "id": 6,
+    "tanggal": "2026-06-03",
+    "sekolah": "SDN 021 Pekanbaru",
+    "menu": "Nasi Ayam Gulai",
+    "porsi": 350,
+    "kalori": 690,
+    "protein": 29,
+    "karbohidrat": 87,
+    "lemak": 21,
+    "serat": 5
+  },
+  {
+    "id": 7,
+    "tanggal": "2026-06-03",
+    "sekolah": "SMPN 13 Pekanbaru",
+    "menu": "Nasi Ikan Asam Pedas",
+    "porsi": 420,
+    "kalori": 670,
+    "protein": 31,
+    "karbohidrat": 83,
+    "lemak": 18,
+    "serat": 6
+  },
+  {
+    "id": 8,
+    "tanggal": "2026-06-04",
+    "sekolah": "SMAN 05 Pekanbaru",
+    "menu": "Nasi Ayam Crispy",
+    "porsi": 540,
+    "kalori": 730,
+    "protein": 33,
+    "karbohidrat": 91,
+    "lemak": 22,
+    "serat": 4
+  }
+]

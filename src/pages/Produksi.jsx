@@ -1,78 +1,83 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import dataProduksiAwal from "../data/data-produksi.json";
 
 function Produksi() {
-  // 1. STATE UTAMA: Menyimpan daftar log data produksi makanan harian
-  const [dataProduksi, setDataProduksi] = useState([
-    {
-      id: 1,
-      tanggal: "2026-05-21",
-      sekolah: "SDN 01 Pekanbaru",
-      menu: "Nasi Ayam Sayur",
-      porsi: 340,
-    },
-
-    {
-      id: 2,
-      tanggal: "2026-05-21",
-      sekolah: "SDN 05 Merdeka",
-      menu: "Nasi Telur Balado",
-      porsi: 210,
-    },
-
-    {
-      id: 3,
-      tanggal: "2026-05-21",
-      sekolah: "SMPN 12 Jakarta",
-      menu: "Nasi Ikan Sayur",
-      porsi: 520,
-    },
-
-    {
-      id: 4,
-      tanggal: "2026-05-22",
-      sekolah: "SMKN 02 Jakarta",
-      menu: "Nasi Ayam Kecap",
-      porsi: 450,
-    },
-  ]);
-
-  // 2. STATE NAVIGASI INTERNAL: 'index' | 'create' | 'edit'
+  // MODE HALAMAN
   const [viewMode, setViewMode] = useState("index");
 
-  // 3. STATE BUFFER FORMULIR
+  const [dataProduksi, setDataProduksi] = useState(dataProduksiAwal);
+
+  const [query, setQuery] = useState("");
+
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
   const [formData, setFormData] = useState({
     id: null,
+
     tanggal: "",
     sekolah: "",
     menu: "",
     porsi: "",
+
+    kalori: "",
+    protein: "",
+    karbohidrat: "",
+    lemak: "",
+    serat: "",
   });
 
-  // Fungsi Badge Status Warna (Pembaruan UI Modern border-based)
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Selesai":
-        return "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400";
-      case "Proses":
-        return "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400";
-      default:
-        return "bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-500/10 dark:text-gray-400";
-    }
-  };
+  useEffect(() => {
+    console.log("Halaman Produksi berhasil dimuat");
+  }, []);
 
-  // Hitung Kalkulasi Agregat Secara Dinamis
+  useEffect(() => {
+    console.log(`Jumlah data produksi saat ini: ${dataProduksi.length}`);
+  }, [dataProduksi]);
+
+  useEffect(() => {
+    console.log(`Mode aktif: ${viewMode}`);
+  }, [viewMode]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  useEffect(() => {
+    console.log(`Mencari data: ${debouncedQuery}`);
+  }, [debouncedQuery]);
+
+  // TOTAL PRODUKSI
   const totalProduksi = dataProduksi.reduce(
     (total, item) => total + item.porsi,
     0,
   );
-  const totalProses = dataProduksi.filter(
-    (item) => item.status === "Proses",
-  ).length;
 
-  // Handler Perubahan Kolom Input
+  const filteredProduksi = dataProduksi.filter((item) => {
+  return (
+    item.sekolah
+      .toLowerCase()
+      .includes(debouncedQuery.toLowerCase()) ||
+
+    item.menu
+      .toLowerCase()
+      .includes(debouncedQuery.toLowerCase()) ||
+
+    item.tanggal.includes(debouncedQuery)
+  );
+});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   // Navigasi ke Form Tambah Data (Create)
@@ -102,10 +107,17 @@ function Produksi() {
 
     const payload = {
       id: formData.id || Date.now(),
+
       tanggal: formData.tanggal,
       sekolah: formData.sekolah,
       menu: formData.menu,
       porsi: Number(formData.porsi),
+
+      kalori: Number(formData.kalori),
+      protein: Number(formData.protein),
+      karbohidrat: Number(formData.karbohidrat),
+      lemak: Number(formData.lemak),
+      serat: Number(formData.serat),
     };
 
     if (viewMode === "create") {
@@ -143,9 +155,9 @@ function Produksi() {
               {viewMode === "index" &&
                 "Manajemen data produksi dan distribusi makanan harian MBG/SPPG."}
               {viewMode === "create" &&
-                "Formulir entri perencanaan masak dan jadwal menu produksi harian baru."}
+                "Formulir penambahan data produksi makanan untuk sekolah penerima MBG."}
               {viewMode === "edit" &&
-                "Form pembaruan kuantitas porsi output serta penyelesaian status dapur."}
+                "Formulir pembaruan data produksi makanan yang telah tercatat."}{" "}
             </p>
           </div>
 
@@ -173,63 +185,39 @@ function Produksi() {
 
         {/* KARTU STATISTIK (Hanya Tampil di Mode Tabel Utama) */}
         {viewMode === "index" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/40 rounded-2xl p-5">
-              <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
-                Total Volume Produksi
-              </p>
-              <div className="flex items-baseline mt-2 gap-1">
-                <span className="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
-                  {totalProduksi.toLocaleString("id-ID")}
-                </span>
-                <span className="text-xs font-semibold text-gray-400">
-                  porsi
-                </span>
-              </div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                Akumulasi porsi makanan dapur
-              </p>
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/40 rounded-2xl p-5">
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
+              Total Sekolah
+            </p>
+
+            <div className="flex items-baseline mt-2 gap-1">
+              <span className="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+                {dataProduksi.length}
+              </span>
+
+              <span className="text-xs font-semibold text-gray-400">
+                sekolah
+              </span>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/40 rounded-2xl p-5">
-              <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
-                Variasi Menu Terjadwal
-              </p>
-              <div className="flex items-baseline mt-2 gap-1">
-                <span className="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
-                  {dataProduksi.length}
-                </span>
-                <span className="text-xs font-semibold text-gray-400">
-                  resep
-                </span>
-              </div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                Total database log produksi harian
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/40 rounded-2xl p-5">
-              <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
-                Produksi Dalam Proses
-              </p>
-              <div className="flex items-baseline mt-2 gap-1">
-                <span className="text-3xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
-                  {totalProses}
-                </span>
-                <span className="text-xs font-semibold text-amber-500/70">
-                  batch
-                </span>
-              </div>
-              <p className="text-xs text-amber-500/70 mt-1">
-                Sedang dikerjakan oleh pengolahan
-              </p>
-            </div>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+              Penerima distribusi MBG/SPPG
+            </p>
           </div>
         )}
 
         {/* ==================== BAGIAN 1: INDEX ==================== */}
         {viewMode === "index" && (
           <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md shadow-sm border border-gray-100 dark:border-gray-700/50 rounded-2xl p-6">
+            <div className="mb-4">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Cari sekolah, menu, atau tanggal..."
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none"
+              />
+            </div>
             <div className="overflow-x-auto">
               <table className="table-auto w-full border-collapse">
                 <thead>
@@ -249,17 +237,18 @@ function Produksi() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-sm">
-                  {dataProduksi.length === 0 ? (
+                  {filteredProduksi.length === 0 ? (
                     <tr>
                       <td
                         colSpan="7"
                         className="p-8 text-center text-gray-400 dark:text-gray-500"
                       >
-                        Tidak ada log jadwal rencana produksi makanan saat ini.
+                        Tidak ditemukan data produksi yang sesuai dengan
+                        pencarian.
                       </td>
                     </tr>
                   ) : (
-                    dataProduksi.map((item, index) => (
+                    filteredProduksi.map((item, index) => (
                       <tr
                         key={item.id}
                         className="text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition"
@@ -272,14 +261,21 @@ function Produksi() {
                           {item.tanggal}
                         </td>
 
-                        <td className="p-4 font-semibold text-gray-800 dark:text-gray-100">
-                          {item.sekolah}
+                        <td className="p-4">
+                          <Link
+                            to={`/produksi/${item.id}`}
+                            className="font-semibold text-violet-600 hover:text-violet-700 hover:underline"
+                          >
+                            {item.sekolah}
+                          </Link>
                         </td>
 
                         <td className="p-4">{item.menu}</td>
 
-                        <td className="p-4 text-center font-semibold">
-                          {item.porsi} Porsi
+                        <td className="p-4 text-center">
+                          <span className="inline-flex items-center justify-center px-3 py-1 bg-violet-50 text-violet-700 rounded-lg text-sm font-semibold">
+                            {item.porsi.toLocaleString("id-ID")} Porsi
+                          </span>
                         </td>
 
                         <td className="p-4 text-center">
@@ -316,8 +312,8 @@ function Produksi() {
                 className={`w-2 h-5 rounded-xs mr-2.5 ${viewMode === "create" ? "bg-violet-500" : "bg-amber-500"}`}
               ></span>
               {viewMode === "create"
-                ? "Tambah Agenda Rencana Rilis Produksi"
-                : `Ubah Data Rencana Menu: ${formData.menu}`}
+                ? "Tambah Produksi Harian"
+                : "Edit Produksi Harian"}
             </h2>
 
             <form onSubmit={handleSaveData} className="space-y-5">
@@ -388,55 +384,76 @@ function Produksi() {
                   className="w-full px-4 py-2 border rounded-xl"
                 />
               </div>
-
-              {/* Baris Grid 2: Jumlah & Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Jumlah Target Porsi
+                  <label className="block text-sm font-medium mb-1.5">
+                    Kalori (kkal)
                   </label>
+
                   <input
                     type="number"
-                    name="jumlah"
-                    min="1"
-                    value={formData.jumlah}
+                    name="kalori"
+                    value={formData.kalori}
                     onChange={handleInputChange}
-                    placeholder="Masukkan angka kuantitas porsi..."
-                    required
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100 font-mono"
+                    className="w-full px-4 py-2 border rounded-xl"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Status Dapur
+                  <label className="block text-sm font-medium mb-1.5">
+                    Protein (gr)
                   </label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
-                  >
-                    <option value="Proses">Proses (Sedang Dimasak)</option>
-                    <option value="Selesai">Selesai (Siap Distribusi)</option>
-                  </select>
-                </div>
-              </div>
 
-              {/* Field: Komposisi Bahan Utama */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Komposisi Bahan Utama
-                </label>
-                <input
-                  type="text"
-                  name="bahanUtama"
-                  value={formData.bahanUtama}
-                  onChange={handleInputChange}
-                  placeholder="Contoh: Beras, Telur, Daging, Cabe Rawit (pisahkan dengan koma)"
-                  required
-                  className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
-                />
+                  <input
+                    type="number"
+                    name="protein"
+                    value={formData.protein}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">
+                    Karbohidrat (gr)
+                  </label>
+
+                  <input
+                    type="number"
+                    name="karbohidrat"
+                    value={formData.karbohidrat}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">
+                    Lemak (gr)
+                  </label>
+
+                  <input
+                    type="number"
+                    name="lemak"
+                    value={formData.lemak}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-xl"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium mb-1.5">
+                    Serat (gr)
+                  </label>
+
+                  <input
+                    type="number"
+                    name="serat"
+                    value={formData.serat}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-xl"
+                  />
+                </div>
               </div>
 
               {/* Grup Tombol Pengendali Form */}
@@ -452,9 +469,7 @@ function Produksi() {
                   type="submit"
                   className="px-5 py-2 bg-violet-500 hover:bg-violet-600 dark:bg-violet-600 dark:hover:bg-violet-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-violet-500/10 active:scale-95 transition-all duration-150"
                 >
-                  {viewMode === "create"
-                    ? "Simpan Rencana"
-                    : "Simpan Perubahan"}
+                  {viewMode === "create" ? "Simpan Data" : "Simpan Perubahan"}
                 </button>
               </div>
             </form>
