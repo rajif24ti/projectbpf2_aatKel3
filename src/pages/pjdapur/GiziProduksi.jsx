@@ -1,12 +1,23 @@
 import { useParams, Link } from "react-router-dom";
-import dataProduksi from "../data/data-produksi.json";
+import dataProduksiAwal from "../../data/data-produksi.json";
+import dataSekolah from "../../data/data-sekolah.json";
 
 export default function GiziProduksi() {
   const { id } = useParams();
 
-  const produksi = dataProduksi.find(
+  // Cari data produksi
+  const produksi = dataProduksiAwal.find(
     (item) => item.id === Number(id)
   );
+
+  // Cari nama sekolah berdasarkan idSekolah
+  const getNamaSekolah = (idSekolah) => {
+    const sekolah = dataSekolah.find(
+      (item) => item.id === Number(idSekolah)
+    );
+
+    return sekolah ? sekolah.nama : "Sekolah tidak ditemukan";
+  };
 
   if (!produksi) {
     return (
@@ -31,7 +42,7 @@ export default function GiziProduksi() {
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            {produksi.sekolah}
+            {getNamaSekolah(produksi.idSekolah)}
           </h1>
 
           <p className="text-gray-500 mt-2">
@@ -48,27 +59,28 @@ export default function GiziProduksi() {
           <div className="grid grid-cols-2 gap-4">
 
             <div>
-              <p className="text-sm text-gray-500">
-                Tanggal
+              <p className="text-sm text-gray-500">Sekolah</p>
+              <p className="font-semibold">
+                {getNamaSekolah(produksi.idSekolah)}
               </p>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-500">Tanggal</p>
               <p className="font-semibold">
                 {produksi.tanggal}
               </p>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500">
-                Menu
-              </p>
+              <p className="text-sm text-gray-500">Menu</p>
               <p className="font-semibold">
                 {produksi.menu}
               </p>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500">
-                Jumlah Porsi
-              </p>
+              <p className="text-sm text-gray-500">Jumlah Porsi</p>
               <p className="font-semibold">
                 {produksi.porsi} Porsi
               </p>
@@ -79,7 +91,6 @@ export default function GiziProduksi() {
 
         {/* Informasi Gizi */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-
           <h2 className="text-lg font-semibold mb-4">
             Informasi Gizi
           </h2>

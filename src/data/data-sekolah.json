@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "npsn": "20103211",
+    "nama": "SDN 01 Pekanbaru",
+    "jenjang": "SD",
+    "jumlahSiswa": 340,
+    "alamat": "Jl. Pemuda No.10 Pekanbaru"
+  },
+  {
+    "id": 2,
+    "npsn": "20104562",
+    "nama": "SDN 05 Merdeka",
+    "jenjang": "SD",
+    "jumlahSiswa": 210,
+    "alamat": "Jl. Merdeka Barat No.45 Jakarta"
+  }
+]

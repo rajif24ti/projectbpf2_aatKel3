@@ -70,6 +70,11 @@ function KotakSaran() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const openEditMode = (item) => {
+    setFormData(item);
+    setViewMode("edit");
+  };
+
   // Navigasi ke Tulis Pesan Baru (Create)
   const openCreateMode = () => {
     setFormData({
@@ -104,22 +109,30 @@ function KotakSaran() {
     e.preventDefault();
 
     const hariIni = new Date();
-    const tanggalFormat = `${String(hariIni.getDate()).padStart(2, "0")}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${hariIni.getFullYear()}`;
+    const tanggalFormat = `${String(hariIni.getDate()).padStart(2, "0")}-${String(
+      hariIni.getMonth() + 1,
+    ).padStart(2, "0")}-${hariIni.getFullYear()}`;
 
     const payload = {
-      id: Date.now(),
-      sekolah: formData.pengirim,
+      id: formData.id ?? Date.now(),
+      sekolah: formData.sekolah,
       kategori: formData.kategori,
       subjek: formData.subjek,
       isi: formData.isi,
-      tanggal: tanggalFormat,
-      status: "Belum Dibaca",
+      tanggal: formData.tanggal || tanggalFormat,
+      status: formData.status,
     };
 
-    setDataPesan([payload, ...dataPesan]); // Menambahkan pesan baru di paling atas
+    if (viewMode === "create") {
+      setDataPesan([payload, ...dataPesan]);
+    } else {
+      setDataPesan(
+        dataPesan.map((item) => (item.id === payload.id ? payload : item)),
+      );
+    }
+
     setViewMode("index");
   };
-
   // Handler Hapus Pesan (Delete)
   const handleDeleteMessage = (id) => {
     if (
@@ -233,44 +246,21 @@ function KotakSaran() {
                         </td>
                         <td className="p-4 text-center">
                           <div className="flex justify-center items-center gap-2">
-                            <button
-                              onClick={() => openViewMode(item)}
-                              className="p-1.5 text-violet-500 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-500/10 rounded-lg transition"
-                              title="Baca Pesan"
-                            >
-                              <svg
-                                className="w-4 h-4 fill-none stroke-current"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
+                            <div className="flex justify-center gap-2">
+                              <button onClick={() => openViewMode(item)}>
+                                👁️
+                              </button>
+
+                              <button onClick={() => openEditMode(item)}>
+                                ✏️
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteMessage(item.id)}
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteMessage(item.id)}
-                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition"
-                              title="Hapus Pesan"
-                            >
-                              <svg
-                                className="w-4 h-4 fill-current"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.728-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </button>
+                                🗑️
+                              </button>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -283,7 +273,7 @@ function KotakSaran() {
         )}
 
         {/* ==================== BAGIAN CREATE ==================== */}
-        {viewMode === "create" && (
+        {(viewMode === "create" || viewMode === "edit") && (
           <div className="max-w-3xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/60 rounded-2xl p-8">
             {/* HEADER */}
             <div className="mb-8">

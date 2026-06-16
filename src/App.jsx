@@ -1,84 +1,97 @@
-import React, { useEffect, Suspense } from "react";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+
+import users from "./data/users";
 
 import "./css/style.css";
 import "./charts/ChartjsConfig";
-import KotakSaran from "./pages/KotakSaran";
 
-// Lazy loading components
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
 const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
-const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 
-// PERUBAHAN: Lazy import untuk Absensi Masuk dan Absensi Pulang
-const AbsensiMasuk = React.lazy(() => import("./pages/AbsensiMasuk"));
-const AbsensiPulang = React.lazy(() => import("./pages/AbsensiPulang"));
-
-const DataKaryawan = React.lazy(() => import("./pages/DataKaryawan"));
-const DataSekolah = React.lazy(() => import("./pages/DataSekolah"));
-const KotakPesan = React.lazy(() => import("./pages/KotakSaran"));
-const Produksi = React.lazy(() => import("./pages/Produksi"));
-const Laporan = React.lazy(() => import("./pages/Laporan"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
-const Register = React.lazy(() => import("./pages/auth/Register"));
-const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
+
+/* Dashboard */
+const DashboardPJDapur = React.lazy(() => import("./pages/pjdapur/Dashboard"));
+const DashboardAhliGizi = React.lazy(
+  () => import("./pages/ahligizi/Dashboard"),
+);
+const DashboardPJSekolah = React.lazy(
+  () => import("./pages/pjsekolah/Dashboard"),
+);
+
+/* PJ Dapur */
+const DataKaryawan = React.lazy(() => import("./pages/pjdapur/DataKaryawan"));
+const AbsensiMasuk = React.lazy(() => import("./pages/pjdapur/AbsensiMasuk"));
+const AbsensiPulang = React.lazy(() => import("./pages/pjdapur/AbsensiPulang"));
+const Produksi = React.lazy(() => import("./pages/pjdapur/Produksi"));
+const GiziProduksi = React.lazy(() => import("./pages/pjdapur/GiziProduksi"));
+const KotakSaran = React.lazy(() => import("./pages/pjdapur/KotakSaran"));
+const Laporan = React.lazy(() => import("./pages/pjdapur/Laporan"));
+
+/* PJ Sekolah */
+const DataSekolah = React.lazy(() => import("./pages/pjsekolah/DataSekolah"));
+const KotakSaranSekolah = React.lazy(
+  () => import("./pages/pjsekolah/KotakSaran"),
+);
+
 const NotFound = React.lazy(() => import("./pages/NotFound"));
-const GiziProduksi = React.lazy(() => import("./pages/GiziProduksi"));
 
 export default function App() {
   const location = useLocation();
 
   useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, []);
+
+  useEffect(() => {
     const html = document.querySelector("html");
+
     html.style.scrollBehavior = "auto";
-    window.scroll({ top: 0 });
+
+    window.scrollTo(0, 0);
+
     html.style.scrollBehavior = "";
   }, [location.pathname]);
 
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
-          <div className="flex flex-col items-center">
-            {/* Spinner interaktif yang serasi */}
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-500 mb-2"></div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-              Memuat Halaman...
-            </div>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<h2>Loading...</h2>}>
       <Routes>
-        {/* Redirect dari root (/) ke login secara otomatis */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Gruping rute Aplikasi Utama (MainLayout) */}
-        <Route element={<MainLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
 
-          {/* PERUBAHAN: Routing pemisahan Absensi */}
+        <Route element={<MainLayout />}>
+          <Route path="/dashboard-pj-dapur" element={<DashboardPJDapur />} />
+
+          <Route path="/dashboard-ahli-gizi" element={<DashboardAhliGizi />} />
+
+          <Route
+            path="/dashboard-pj-sekolah"
+            element={<DashboardPJSekolah />}
+          />
+
           <Route path="/absensi-masuk" element={<AbsensiMasuk />} />
+
           <Route path="/absensi-pulang" element={<AbsensiPulang />} />
 
           <Route path="/data-karyawan" element={<DataKaryawan />} />
-          <Route path="/data-sekolah" element={<DataSekolah />} />
-          <Route path="/kotak-saran" element={<KotakSaran />} />
-          <Route path="/produksi" element={<Produksi />} />
-          <Route path="/laporan" element={<Laporan />} />
+
           <Route path="/produksi" element={<Produksi />} />
 
           <Route path="/produksi/:id" element={<GiziProduksi />} />
+
+          <Route path="/laporan" element={<Laporan />} />
+
+          <Route path="/kotak-saran" element={<KotakSaran />} />
+
+          <Route path="/data-sekolah" element={<DataSekolah />} />
+
+          <Route path="/kotak-saran-sekolah" element={<KotakSaranSekolah />} />
         </Route>
 
-        {/* Gruping rute Autentikasi (AuthLayout) */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot" element={<Forgot />} />
-        </Route>
-
-        {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
