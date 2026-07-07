@@ -82,7 +82,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:flex! flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-66 lg:w-22 lg:sidebar-expanded:!w-66 2xl:w-66! shrink-0 bg-white/80 dark:bg-gray-800/70 backdrop-blur-md p-4 transition-all duration-200 ease-in-out ${
+        className={`flex lg:flex! flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:w-64! shrink-0 bg-white/80 dark:bg-gray-800/70 backdrop-blur-md p-4 transition-all duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         } ${variant === "v2" ? "border-r border-gray-200/80 dark:border-gray-700/50" : "rounded-r-2xl border-r border-gray-100 dark:border-gray-700/30 shadow-lg shadow-gray-200/20 dark:shadow-none"}`}
       >
@@ -125,7 +125,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
               </svg>
             </div>
 
-            <span className="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight lg:hidden lg:sidebar-expanded:block 2xl:block duration-200">
               SIMOD - MBG<span className="text-violet-500">.</span>
             </span>
           </NavLink>
@@ -136,7 +136,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           <div>
             {/* Header Kategori Menu dengan pemisah garis tipis */}
             <div className="flex items-center gap-2 mb-4 px-3">
-              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:hidden lg:sidebar-expanded:block 2xl:block duration-200">
                 Menu Utama
               </span>
               <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
@@ -164,7 +164,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                       >
                         <path d="M3 3h8v8H3V3zm10 0h8v5h-8V3zM3 13h5v8H3v-8zm7-3h11v11H10V10z" />
                       </svg>
-                      <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">
                         Dashboard
                       </span>
                     </>
@@ -190,7 +190,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M12 12V7" />
                             <path d="M9 10l3-3 3 3" />
                           </svg>
-                          <span>Absensi Masuk</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Absensi Masuk</span>
                         </>
                       )}
                     </NavLink>
@@ -211,7 +211,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M12 7v5" />
                             <path d="M9 9l3 3 3-3" />
                           </svg>
-                          <span>Absensi Pulang</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Absensi Pulang</span>
                         </>
                       )}
                     </NavLink>
@@ -228,7 +228,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
                           </svg>
-                          <span>Data Karyawan</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Data Karyawan</span>
                         </>
                       )}
                     </NavLink>
@@ -245,7 +245,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M4 4h16v4H4zm2 6h12v10H6z" />
                           </svg>
-                          <span>Produksi</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Produksi</span>
                         </>
                       )}
                     </NavLink>
@@ -262,7 +262,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 3L2 8v2h20V8L12 3zm-7 9h2v7H5zm4 0h2v7H9zm4 0h2v7h-2zm4 0h2v7h-2zM2 21h20v2H2z" />
                           </svg>
-                          <span>Data Sekolah</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Data Sekolah</span>
                         </>
                       )}
                     </NavLink>
@@ -280,7 +280,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M6 2h9l5 5v15H6z" />
                             <path d="M15 2v5h5" />
                           </svg>
-                          <span>Laporan</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Laporan</span>
                         </>
                       )}
                     </NavLink>
@@ -299,7 +299,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                           </svg>
-                          <span>Kotak Saran</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Kotak Saran</span>
                         </>
                       )}
                     </NavLink>
@@ -321,7 +321,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M4 4h16v4H4zm2 6h12v10H6z" />
                           </svg>
-                          <span>Produksi</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Produksi</span>
                         </>
                       )}
                     </NavLink>
@@ -343,7 +343,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 3L2 8v2h20V8L12 3zm-7 9h2v7H5zm4 0h2v7H9zm4 0h2v7h-2zm4 0h2v7h-2zM2 21h20v2H2z" />
                           </svg>
-                          <span>Data Sekolah</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Data Sekolah</span>
                         </>
                       )}
                     </NavLink>
@@ -362,7 +362,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                           </svg>
-                          <span>Kotak Saran</span>
+                          <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">Kotak Saran</span>
                         </>
                       )}
                     </NavLink>
@@ -373,7 +373,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
 
             {/* Kategori Keluar */}
             <div className="flex items-center gap-2 mt-6 mb-3 px-3">
-              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap lg:hidden lg:sidebar-expanded:block 2xl:block duration-200">
                 Sesi
               </span>
               <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
@@ -391,7 +391,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   >
                     <path d="M11 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9h-2v4H3V3h8v4h2V3a2 2 0 0 0-2-2Zm2.5 6H7v2h6.5l-2 2 1.4 1.4 4.3-4.4-4.3-4.4-1.4 1.4 2 2Z" />
                   </svg>
-                  <span className="lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                  <span className="lg:hidden lg:sidebar-expanded:block 2xl:block whitespace-nowrap">
                     Logout
                   </span>
                 </button>
