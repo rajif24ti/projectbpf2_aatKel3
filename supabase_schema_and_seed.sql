@@ -86,6 +86,13 @@ ALTER TABLE absensi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kotak_saran ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Izinkan semua operasi CRUD untuk public/anon role
+DROP POLICY IF EXISTS "Allow all for anon" ON users;
+DROP POLICY IF EXISTS "Allow all for anon" ON sekolah;
+DROP POLICY IF EXISTS "Allow all for anon" ON karyawan;
+DROP POLICY IF EXISTS "Allow all for anon" ON produksi;
+DROP POLICY IF EXISTS "Allow all for anon" ON absensi;
+DROP POLICY IF EXISTS "Allow all for anon" ON kotak_saran;
+
 CREATE POLICY "Allow all for anon" ON users        FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON sekolah      FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON karyawan     FOR ALL TO anon USING (true) WITH CHECK (true);

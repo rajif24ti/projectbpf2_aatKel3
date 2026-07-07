@@ -35,7 +35,8 @@ export default function Login() {
         .single();
 
       if (queryError || !data) {
-        setError("Username atau Password salah!");
+        console.error("Supabase Login Error:", queryError);
+        setError("Username atau Password salah! (Cek Console)");
         setLoading(false);
         return;
       }
