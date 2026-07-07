@@ -10,10 +10,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
-  const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
-  );
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -87,8 +84,6 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         ref={sidebar}
         className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar shrink-0 bg-white/80 dark:bg-gray-800/70 backdrop-blur-md p-4 transition-all duration-300 ease-in-out w-64 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
-        } ${
-          !sidebarExpanded ? "lg:w-20" : ""
         } ${variant === "v2" ? "border-r border-gray-200/80 dark:border-gray-700/50" : "rounded-r-2xl border-r border-gray-100 dark:border-gray-700/30 shadow-lg shadow-gray-200/20 dark:shadow-none"}`}
       >
         {/* Bagian Atas: Tombol Close Mobile & Logo Dashboard */}
@@ -130,7 +125,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
               </svg>
             </div>
 
-            <span className={`text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight whitespace-nowrap">
               SIMOD - MBG<span className="text-violet-500">.</span>
             </span>
           </NavLink>
@@ -141,7 +136,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           <div>
             {/* Header Kategori Menu dengan pemisah garis tipis */}
             <div className="flex items-center gap-2 mb-4 px-3">
-              <span className={`text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap">
                 Menu Utama
               </span>
               <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
@@ -169,7 +164,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                       >
                         <path d="M3 3h8v8H3V3zm10 0h8v5h-8V3zM3 13h5v8H3v-8zm7-3h11v11H10V10z" />
                       </svg>
-                      <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>
+                      <span className="whitespace-nowrap">
                         Dashboard
                       </span>
                     </>
@@ -195,7 +190,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M12 12V7" />
                             <path d="M9 10l3-3 3 3" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Absensi Masuk</span>
+                          <span className="whitespace-nowrap">Absensi Masuk</span>
                         </>
                       )}
                     </NavLink>
@@ -216,7 +211,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M12 7v5" />
                             <path d="M9 9l3 3 3-3" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Absensi Pulang</span>
+                          <span className="whitespace-nowrap">Absensi Pulang</span>
                         </>
                       )}
                     </NavLink>
@@ -233,7 +228,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Data Karyawan</span>
+                          <span className="whitespace-nowrap">Data Karyawan</span>
                         </>
                       )}
                     </NavLink>
@@ -250,7 +245,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M4 4h16v4H4zm2 6h12v10H6z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Produksi</span>
+                          <span className="whitespace-nowrap">Produksi</span>
                         </>
                       )}
                     </NavLink>
@@ -267,7 +262,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 3L2 8v2h20V8L12 3zm-7 9h2v7H5zm4 0h2v7H9zm4 0h2v7h-2zm4 0h2v7h-2zM2 21h20v2H2z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Data Sekolah</span>
+                          <span className="whitespace-nowrap">Data Sekolah</span>
                         </>
                       )}
                     </NavLink>
@@ -285,7 +280,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                             <path d="M6 2h9l5 5v15H6z" />
                             <path d="M15 2v5h5" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Laporan</span>
+                          <span className="whitespace-nowrap">Laporan</span>
                         </>
                       )}
                     </NavLink>
@@ -304,7 +299,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Kotak Saran</span>
+                          <span className="whitespace-nowrap">Kotak Saran</span>
                         </>
                       )}
                     </NavLink>
@@ -326,7 +321,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M4 4h16v4H4zm2 6h12v10H6z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Produksi</span>
+                          <span className="whitespace-nowrap">Produksi</span>
                         </>
                       )}
                     </NavLink>
@@ -348,7 +343,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M12 3L2 8v2h20V8L12 3zm-7 9h2v7H5zm4 0h2v7H9zm4 0h2v7h-2zm4 0h2v7h-2zM2 21h20v2H2z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Data Sekolah</span>
+                          <span className="whitespace-nowrap">Data Sekolah</span>
                         </>
                       )}
                     </NavLink>
@@ -367,7 +362,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           >
                             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                           </svg>
-                          <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>Kotak Saran</span>
+                          <span className="whitespace-nowrap">Kotak Saran</span>
                         </>
                       )}
                     </NavLink>
@@ -378,7 +373,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
 
             {/* Kategori Keluar */}
             <div className="flex items-center gap-2 mt-6 mb-3 px-3">
-              <span className={`text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap">
                 Sesi
               </span>
               <div className="h-[1px] w-full bg-gray-100 dark:bg-gray-700/50"></div>
@@ -396,7 +391,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   >
                     <path d="M11 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9h-2v4H3V3h8v4h2V3a2 2 0 0 0-2-2Zm2.5 6H7v2h6.5l-2 2 1.4 1.4 4.3-4.4-4.3-4.4-1.4 1.4 2 2Z" />
                   </svg>
-                  <span className={`whitespace-nowrap transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'lg:hidden'} ${!sidebarExpanded ? 'lg:opacity-0' : ''}`}>
+                  <span className="whitespace-nowrap">
                     Logout
                   </span>
                 </button>
@@ -405,23 +400,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           </div>
         </div>
 
-        {/* Bagian Bawah: Tombol Collapse (Kecilkan/Lebarkan Sidebar) */}
-        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
-          <div className="w-12 pl-4 pr-3 py-2">
-            <button
-              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 bg-gray-50 dark:bg-gray-700/30 w-8 h-8 rounded-lg flex items-center justify-center border border-gray-100 dark:border-gray-700/50 shadow-xs transition"
-              onClick={() => setSidebarExpanded(!sidebarExpanded)}
-            >
-              <span className="sr-only">Expand / collapse sidebar</span>
-              <svg
-                className="shrink-0 fill-current text-gray-400 dark:text-gray-500 sidebar-expanded:rotate-180 w-4 h-4"
-                viewBox="0 0 16 16"
-              >
-                <path d="M15 16a1 1 0 0 1-1-1V1a1 1 0 1 1 2 0v14a1 1 0 0 1-1 1ZM8.586 7H1a1 1 0 1 0 0 2h7.586l-2.793 2.793a1 1 0 1 0 1.414 1.414l4.5-4.5A.997.997 0 0 0 12 8.01M11.924 7.617a.997.997 0 0 0-.217-.324l-4.5-4.5a1 1 0 0 0-1.414 1.414L8.586 7M12 7.99a.996.996 0 0 0-.076-.373Z" />
-              </svg>
-            </button>
-          </div>
-        </div>
+
       </div>
     </div>
   );
