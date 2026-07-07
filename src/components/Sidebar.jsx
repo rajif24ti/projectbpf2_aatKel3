@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Dashboard from "../pages/pjdapur/Dashboard";
 
 function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const trigger = useRef(null);
@@ -105,7 +104,13 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           {/* Logo dengan wadah lingkaran gradien estetik */}
           <NavLink
             end
-            to={Dashboard}
+            to={
+              role === "pj_dapur"
+                ? "/dashboard-pj-dapur"
+                : role === "ahli_gizi"
+                  ? "/dashboard-ahli-gizi"
+                  : "/dashboard-pj-sekolah"
+            }
             className="group flex items-center gap-3"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-500 to-indigo-500 flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:scale-105 transition duration-200">
@@ -230,7 +235,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   </li>
 
                   <li>
-                    <NavLink to="/produksi" className={menuClass}>
+                    <NavLink to="/produksi-pj-dapur" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg
@@ -247,7 +252,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   </li>
 
                   <li>
-                    <NavLink to="/data-sekolah" className={menuClass}>
+                    <NavLink to="/pjdapur/data-sekolah" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg
@@ -282,7 +287,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   </li>
 
                   <li>
-                    <NavLink to="/kotak-saran" className={menuClass}>
+                    <NavLink to="/kotak-saran-pj-dapur" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg
@@ -306,7 +311,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
               {role === "ahli_gizi" && (
                 <>
                   <li>
-                    <NavLink to="/produksi" className={menuClass}>
+                    <NavLink to="/produksi-ahli-gizi" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg
@@ -321,7 +326,6 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                       )}
                     </NavLink>
                   </li>
-
                 </>
               )}
 
@@ -329,7 +333,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
               {role === "pj_sekolah" && (
                 <>
                   <li>
-                    <NavLink to="/data-sekolah" className={menuClass}>
+                    <NavLink to="/pjsekolah/data-sekolah" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg
@@ -346,7 +350,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                   </li>
 
                   <li>
-                    <NavLink to="/kotak-saran" className={menuClass}>
+                    <NavLink to="/kotak-saran-sekolah" className={menuClass}>
                       {({ isActive }) => (
                         <>
                           <svg

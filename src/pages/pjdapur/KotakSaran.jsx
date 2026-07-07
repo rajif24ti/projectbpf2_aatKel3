@@ -1,73 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 function KotakSaran() {
   // 1. STATE UTAMA: Menyimpan data pesan masuk / keluar
-  const [dataPesan] = useState([
-    {
-      id: 1,
-      sekolah: "SDN 01 Menteng",
-      kategori: "Saran Pelayanan",
-      subjek: "Kualitas Kemasan Makanan",
-      isi: "Mohon kemasan makanan diperkuat karena beberapa kotak makanan mengalami kerusakan saat diterima siswa.",
-      tanggal: "20-05-2026",
-      status: "Belum Dibaca",
-    },
+  const [dataPesan, setDataPesan] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    {
-      id: 2,
-      sekolah: "SMP Negeri 03 Jakarta",
-      kategori: "Masukan Distribusi",
-      subjek: "Pengiriman Terlambat",
-      isi: "Distribusi makanan hari ini datang lebih lambat sekitar 20 menit dari jadwal biasanya.",
-      tanggal: "20-05-2026",
-      status: "Sudah Dibaca",
-    },
-
-    {
-      id: 3,
-      sekolah: "SMAN 05 Jakarta",
-      kategori: "Evaluasi Menu",
-      subjek: "Variasi Menu Mingguan",
-      isi: "Siswa berharap terdapat variasi menu tambahan agar tidak monoton setiap minggunya.",
-      tanggal: "19-05-2026",
-      status: "Sudah Dibaca",
-    },
-  ]);
   // 2. STATE NAVIGASI INTERNAL: 'index' | 'create' | 'view'
   const [viewMode, setViewMode] = useState("index");
 
   // 3. STATE BUFFER: Penampung data formulir kirim pesan baru / detail baca pesan
   const [formData, setFormData] = useState({});
 
+  useEffect(() => {
+    fetchSaran();
+  }, []);
+
+  const fetchSaran = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("kotak_saran")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      
+      const formatted = (data || []).map(item => ({
+        id: item.id,
+        sekolah: item.sekolah_nama,
+        kategori: item.kategori,
+        subjek: item.subjek,
+        isi: item.isi,
+        tanggal: item.tanggal,
+        status: item.status
+      }));
+      setDataPesan(formatted);
+    } catch (error) {
+      console.error("Error fetching saran:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fungsi pengondisian warna Badge Kategori Pesan
   const getKategoriColor = (kategori) => {
     switch (kategori) {
       case "Saran Pelayanan":
         return "bg-violet-50 text-violet-600 border-violet-200";
-
       case "Masukan Distribusi":
         return "bg-sky-50 text-sky-600 border-sky-200";
-
       case "Evaluasi Menu":
         return "bg-amber-50 text-amber-600 border-amber-200";
-
       default:
         return "bg-gray-50 text-gray-600 border-gray-200";
     }
   };
 
   // Navigasi ke Detail Pesan (Read/View) & Sekaligus Mengubah Status Menjadi "Sudah Dibaca"
-  const openViewMode = (item) => {
+  const openViewMode = async (item) => {
     setFormData(item);
     setViewMode("view");
 
     // Otomatis tandai sudah dibaca jika statusnya masih baru
     if (item.status === "Belum Dibaca") {
-      setDataPesan(
-        dataPesan.map((p) =>
-          p.id === item.id ? { ...p, status: "Sudah Dibaca" } : p,
-        ),
-      );
+      try {
+        const { error } = await supabase
+          .from("kotak_saran")
+          .update({ status: "Sudah Dibaca" })
+          .eq("id", item.id);
+          
+        if (error) throw error;
+        
+        setDataPesan(
+          dataPesan.map((p) =>
+            p.id === item.id ? { ...p, status: "Sudah Dibaca" } : p,
+          ),
+        );
+      } catch (error) {
+        console.error("Error updating status:", error.message);
+      }
     }
   };
 

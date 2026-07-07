@@ -1,51 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 function DataKaryawan() {
   // 1. STATE UTAMA: Menyimpan data profil karyawan tim pengolahan
-  const [dataKaryawan, setDataKaryawan] = useState([
-    {
-      id: 1,
-      nip: "NIP1001",
-      nama: "Rahmat Hidayat",
-      divisi: "Persiapan",
-      statusKerja: "Aktif",
-    },
-    {
-      id: 2,
-      nip: "NIP1002",
-      nama: "Siti Aminah",
-      divisi: "Pengolahan",
-      statusKerja: "Aktif",
-    },
-    {
-      id: 3,
-      nip: "NIP1003",
-      nama: "Budi Santoso",
-      divisi: "Pengolahan",
-      statusKerja: "Aktif",
-    },
-    {
-      id: 4,
-      nip: "NIP1004",
-      nama: "Rina Lestari",
-      divisi: "Pemorsian",
-      statusKerja: "Aktif",
-    },
-    {
-      id: 5,
-      nip: "NIP1005",
-      nama: "Agus Pratama",
-      divisi: "Distribusi",
-      statusKerja: "Aktif",
-    },
-    {
-      id: 6,
-      nip: "NIP1006",
-      nama: "Dewi Kartika",
-      divisi: "Pencucian",
-      statusKerja: "Aktif",
-    },
-  ]);
+  const [dataKaryawan, setDataKaryawan] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // 2. STATE NAVIGASI INTERNAL: 'index' | 'create' | 'edit'
   const [viewMode, setViewMode] = useState("index");
@@ -56,8 +15,30 @@ function DataKaryawan() {
     nip: "",
     nama: "",
     divisi: "",
-    statusKerja: "Aktif",
+    status_kerja: "Aktif",
   });
+
+  // Fetch Karyawan dari Supabase
+  useEffect(() => {
+    fetchKaryawan();
+  }, []);
+
+  const fetchKaryawan = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("karyawan")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) throw error;
+      setDataKaryawan(data || []);
+    } catch (error) {
+      console.error("Error fetching karyawan:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fungsi pengondisian warna Badge Status Kerja Karyawan
   const getStatusKerjaColor = (status) => {
@@ -79,7 +60,7 @@ function DataKaryawan() {
       nip: "",
       nama: "",
       divisi: "",
-      statusKerja: "Aktif",
+      status_kerja: "Aktif",
     });
     setViewMode("create");
   };
@@ -91,40 +72,60 @@ function DataKaryawan() {
   };
 
   // Handler Aksi Simpan (Create & Edit)
-  const handleSaveData = (e) => {
+  const handleSaveData = async (e) => {
     e.preventDefault();
 
     const payload = {
-      id: formData.id || Date.now(),
       nip: formData.nip,
       nama: formData.nama,
       divisi: formData.divisi,
-      statusKerja: formData.statusKerja,
+      status_kerja: formData.status_kerja,
     };
 
-    if (viewMode === "create") {
-      // Validasi NIP duplikat sederhana
-      if (dataKaryawan.some((emp) => emp.nip === formData.nip)) {
-        alert("NIP sudah terdaftar di sistem!");
-        return;
+    try {
+      if (viewMode === "create") {
+        // Validasi NIP duplikat sederhana di frontend (Supabase juga akan reject karena UNIQUE constraint)
+        if (dataKaryawan.some((emp) => emp.nip === formData.nip)) {
+          alert("NIP sudah terdaftar di sistem!");
+          return;
+        }
+        const { error } = await supabase.from("karyawan").insert([payload]);
+        if (error) throw error;
+      } else if (viewMode === "edit") {
+        const { error } = await supabase
+          .from("karyawan")
+          .update(payload)
+          .eq("id", formData.id);
+        if (error) throw error;
       }
-      setDataKaryawan([...dataKaryawan, payload]);
-    } else if (viewMode === "edit") {
-      setDataKaryawan(
-        dataKaryawan.map((item) => (item.id === formData.id ? payload : item)),
-      );
+      
+      await fetchKaryawan();
+      setViewMode("index");
+    } catch (error) {
+      console.error("Error saving data:", error.message);
+      alert("Gagal menyimpan data: " + error.message);
     }
-    setViewMode("index");
   };
 
   // Handler Aksi Hapus Data Karyawan
-  const handleDeleteData = (id, nama) => {
+  const handleDeleteData = async (id, nama) => {
     if (
       window.confirm(
-        `Apakah Anda yakin ingin menghapus data karyawan "${nama}"? Semua log absensi tersambung akan diarsipkan.`,
+        `Apakah Anda yakin ingin menghapus data karyawan "${nama}"? Semua log absensi tersambung akan diarsipkan.`
       )
     ) {
-      setDataKaryawan(dataKaryawan.filter((item) => item.id !== id));
+      try {
+        const { error } = await supabase
+          .from("karyawan")
+          .delete()
+          .eq("id", id);
+          
+        if (error) throw error;
+        await fetchKaryawan();
+      } catch (error) {
+        console.error("Error deleting data:", error.message);
+        alert("Gagal menghapus data.");
+      }
     }
   };
 
@@ -225,10 +226,10 @@ function DataKaryawan() {
                       <td className="w-48 px-6 py-5 text-center">
                         <span
                           className={`inline-flex items-center justify-center min-w-[80px] px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap ${getStatusKerjaColor(
-                            item.statusKerja,
+                            item.status_kerja,
                           )}`}
                         >
-                          {item.statusKerja}
+                          {item.status_kerja}
                         </span>
                       </td>
 
@@ -353,8 +354,8 @@ function DataKaryawan() {
                   Status Kontrak Kerja
                 </label>
                 <select
-                  name="statusKerja"
-                  value={formData.statusKerja}
+                  name="status_kerja"
+                  value={formData.status_kerja}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-800 dark:text-gray-100"
                 >

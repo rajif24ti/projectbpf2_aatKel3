@@ -279,7 +279,7 @@ function KotakSaran() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
                 <span className="w-2 h-6 rounded-full bg-violet-500"></span>
-                Tambah Saran & Masukan Sekolah
+                Tambah Dan Edit Saran & Masukan Sekolah
               </h2>
 
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">

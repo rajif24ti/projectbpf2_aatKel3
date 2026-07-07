@@ -3,3 +3,8 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Environment variables - JANGAN di-push ke GitHub!
+.env
+.env.local
+.env.production

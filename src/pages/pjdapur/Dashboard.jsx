@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 export default function Dashboard() {
-  // Data Karyawan
   const [dataKaryawan] = useState([
     { id: 1, nama: "Siti Aminah", status: "Hadir" },
     { id: 2, nama: "Budi Santoso", status: "Hadir" },
@@ -10,32 +9,36 @@ export default function Dashboard() {
     { id: 5, nama: "Dewi Kartika", status: "Sakit" },
   ]);
 
-  // Data Produksi
+  const [dataSekolah] = useState([
+    { id: 1, nama: "SD Negeri 01", jumlahSiswa: 350 },
+    { id: 2, nama: "SD Negeri 02", jumlahSiswa: 280 },
+    { id: 3, nama: "SMP Negeri 05", jumlahSiswa: 420 },
+  ]);
+
   const [dataProduksi] = useState([
     {
       id: 1,
-      tanggal: "16 Juni 2026",
+      tanggal: "24 Juni 2026",
       menu: "Nasi Ayam",
       jumlah: 1200,
       status: "Selesai",
     },
     {
       id: 2,
-      tanggal: "16 Juni 2026",
+      tanggal: "24 Juni 2026",
       menu: "Nasi Telur",
       jumlah: 950,
       status: "Proses",
     },
     {
       id: 3,
-      tanggal: "16 Juni 2026",
+      tanggal: "24 Juni 2026",
       menu: "Nasi Ikan",
       jumlah: 1000,
       status: "Selesai",
     },
   ]);
 
-  // Data Laporan
   const [laporan] = useState([
     {
       id: 1,
@@ -55,121 +58,201 @@ export default function Dashboard() {
   ]);
 
   const totalKaryawan = dataKaryawan.length;
-  const hadir = dataKaryawan.filter((k) => k.status === "Hadir").length;
+
+  const hadir = dataKaryawan.filter((item) => item.status === "Hadir").length;
+
+  const izin = dataKaryawan.filter((item) => item.status === "Izin").length;
+
+  const sakit = dataKaryawan.filter((item) => item.status === "Sakit").length;
+
+  const totalSekolah = dataSekolah.length;
 
   const totalProduksi = dataProduksi.reduce(
-    (a, b) => a + b.jumlah,
-    0
+    (total, item) => total + item.jumlah,
+    0,
   );
 
-  const laporanSelesai = laporan.filter(
-    (l) => l.status === "Selesai"
+  const produksiSelesai = dataProduksi.filter(
+    (item) => item.status === "Selesai",
   ).length;
 
+  const produksiProses = dataProduksi.filter(
+    (item) => item.status === "Proses",
+  ).length;
+
+  const laporanSelesai = laporan.filter(
+    (item) => item.status === "Selesai",
+  ).length;
+
+  const totalDistribusi = dataSekolah.reduce(
+    (total, item) => total + item.jumlahSiswa,
+    0,
+  );
+
   return (
-    <div className="p-6">
+    <main className="grow">
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        {/* HERO */}
+        <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-8 text-white shadow-xl mb-8">
+          <h1 className="text-3xl font-bold">
+            Dashboard Penanggung Jawab Dapur
+          </h1>
 
-      <h1 className="text-3xl font-bold mb-8">
-        Dashboard Penanggung Jawab Dapur
-      </h1>
-
-      {/* CARD */}
-      <div className="grid md:grid-cols-4 gap-5">
-
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-gray-500">Produksi Hari Ini</p>
-          <h2 className="text-3xl font-bold text-violet-600">
-            {totalProduksi}
-          </h2>
-          <small>Porsi</small>
+          <p className="mt-3 text-violet-100">
+            Monitoring produksi makanan bergizi, absensi karyawan, distribusi
+            sekolah, dan laporan operasional secara real-time.
+          </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-gray-500">Karyawan Hadir</p>
-          <h2 className="text-3xl font-bold text-green-600">
-            {hadir}
-          </h2>
-          <small>dari {totalKaryawan} orang</small>
+        {/* CARD STATISTIK */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+            <p className="text-gray-500 text-sm">Produksi Hari Ini</p>
+
+            <h2 className="text-4xl font-bold text-violet-600 mt-2">
+              {totalProduksi.toLocaleString()}
+            </h2>
+
+            <p className="text-sm text-gray-400 mt-2">Total porsi makanan</p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+            <p className="text-gray-500 text-sm">Karyawan Hadir</p>
+
+            <h2 className="text-4xl font-bold text-green-600 mt-2">{hadir}</h2>
+
+            <p className="text-sm text-gray-400 mt-2">
+              dari {totalKaryawan} karyawan
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+            <p className="text-gray-500 text-sm">Sekolah Mitra</p>
+
+            <h2 className="text-4xl font-bold text-blue-600 mt-2">
+              {totalSekolah}
+            </h2>
+
+            <p className="text-sm text-gray-400 mt-2">Sekolah aktif</p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+            <p className="text-gray-500 text-sm">Laporan Selesai</p>
+
+            <h2 className="text-4xl font-bold text-orange-600 mt-2">
+              {laporanSelesai}
+            </h2>
+
+            <p className="text-sm text-gray-400 mt-2">Dokumen selesai</p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-gray-500">Total Karyawan</p>
-          <h2 className="text-3xl font-bold text-blue-600">
-            {totalKaryawan}
-          </h2>
-          <small>Data aktif</small>
-        </div>
+        {/* GRID KONTEN */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* PRODUKSI */}
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-bold mb-4">Produksi Hari Ini</h3>
 
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-gray-500">Laporan Selesai</p>
-          <h2 className="text-3xl font-bold text-orange-600">
-            {laporanSelesai}
-          </h2>
-          <small>Dokumen</small>
-        </div>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-100 dark:bg-gray-700">
+                  <th className="p-3 text-left">Menu</th>
+                  <th className="p-3 text-center">Porsi</th>
+                  <th className="p-3 text-center">Status</th>
+                </tr>
+              </thead>
 
+              <tbody>
+                {dataProduksi.map((item) => (
+                  <tr key={item.id} className="border-b dark:border-gray-700">
+                    <td className="p-3">{item.menu}</td>
+
+                    <td className="p-3 text-center">{item.jumlah}</td>
+
+                    <td className="p-3 text-center">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          item.status === "Selesai"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-yellow-100 text-yellow-600"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ABSENSI */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-bold mb-4">Absensi Hari Ini</h3>
+
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span>Hadir</span>
+                <span className="font-semibold text-green-600">{hadir}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Izin</span>
+                <span className="font-semibold text-yellow-600">{izin}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Sakit</span>
+                <span className="font-semibold text-red-600">{sakit}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* DISTRIBUSI */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-bold mb-4">Distribusi Sekolah</h3>
+
+            <div className="space-y-3">
+              {dataSekolah.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between border-b pb-2"
+                >
+                  <span>{item.nama}</span>
+
+                  <span className="font-semibold">{item.jumlahSiswa}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 pt-4 border-t font-bold flex justify-between">
+              <span>Total Porsi</span>
+              <span>{totalDistribusi}</span>
+            </div>
+          </div>
+
+          {/* STATUS PRODUKSI */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-bold mb-4">Status Produksi</h3>
+
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span>Selesai</span>
+                <span className="text-green-600 font-bold">
+                  {produksiSelesai}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Proses</span>
+                <span className="text-yellow-600 font-bold">
+                  {produksiProses}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* TABEL PRODUKSI */}
-      <div className="bg-white rounded-xl shadow mt-8 p-5">
-
-        <h3 className="text-lg font-semibold mb-4">
-          Produksi Hari Ini
-        </h3>
-
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-2">Tanggal</th>
-              <th className="p-2">Menu</th>
-              <th className="p-2">Jumlah</th>
-              <th className="p-2">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {dataProduksi.map((item) => (
-              <tr key={item.id} className="border-b">
-                <td className="p-2">{item.tanggal}</td>
-                <td className="p-2">{item.menu}</td>
-                <td className="p-2">{item.jumlah} Porsi</td>
-                <td className="p-2">{item.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-      </div>
-
-      {/* LAPORAN */}
-      <div className="bg-white rounded-xl shadow mt-8 p-5">
-
-        <h3 className="text-lg font-semibold mb-4">
-          Status Laporan Operasional
-        </h3>
-
-        <ul className="space-y-3">
-          {laporan.map((item) => (
-            <li
-              key={item.id}
-              className="flex justify-between border-b pb-2"
-            >
-              <span>{item.nama}</span>
-              <span
-                className={
-                  item.status === "Selesai"
-                    ? "text-green-600 font-semibold"
-                    : "text-yellow-600 font-semibold"
-                }
-              >
-                {item.status}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-      </div>
-
-    </div>
+    </main>
   );
 }

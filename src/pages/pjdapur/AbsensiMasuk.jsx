@@ -1,63 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 function Absensi() {
   // 1. STATE UTAMA: Menyimpan data absensi pegawai tim pengolahan
-  const [dataAbsensi, setDataAbsensi] = useState([
-    {
-      id: 1,
-      tanggal: "2026-05-21",
-      nama: "Siti Aminah",
-      divisi: "Pengolahan",
-      jamMasuk: "00:00",
-      status: "Hadir",
-      keterangan: "Tepat Waktu",
-    },
-    {
-      id: 2,
-      tanggal: "2026-05-21",
-      nama: "Budi Santoso",
-      divisi: "Pengolahan",
-      jamMasuk: "00:05",
-      status: "Hadir",
-      keterangan: "Tepat Waktu",
-    },
-    {
-      id: 3,
-      tanggal: "2026-05-21",
-      nama: "Rina Lestari",
-      divisi: "Pemorsian",
-      jamMasuk: "05:30",
-      status: "Terlambat",
-      keterangan: "Melewati Jam Shift",
-    },
-    {
-      id: 4,
-      tanggal: "2026-05-21",
-      nama: "Agus Pratama",
-      divisi: "Distribusi",
-      jamMasuk: "08:00",
-      status: "Hadir",
-      keterangan: "Tepat Waktu",
-    },
-    {
-      id: 5,
-      tanggal: "2026-05-21",
-      nama: "Rahmat Hidayat",
-      divisi: "Persiapan",
-      jamMasuk: "19:00",
-      status: "Hadir",
-      keterangan: "Tepat Waktu",
-    },
-    {
-      id: 6,
-      tanggal: "2026-05-21",
-      nama: "Dewi Kartika",
-      divisi: "Pencucian",
-      jamMasuk: "-",
-      status: "Izin",
-      keterangan: "Izin Tidak Masuk",
-    },
-  ]);
+  const [dataAbsensi, setDataAbsensi] = useState([]);
+  const [dataKaryawan, setDataKaryawan] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch Data dari Supabase
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch absensi
+      const { data: absensiData, error: absensiError } = await supabase
+        .from("absensi")
+        .select(`
+          id, 
+          tanggal, 
+          karyawan_id,
+          jam_masuk, 
+          status, 
+          keterangan,
+          karyawan ( nama, divisi )
+        `)
+        .order("tanggal", { ascending: false });
+
+      if (absensiError) throw absensiError;
+
+      // Transform data for UI
+      const formattedAbsensi = (absensiData || []).map(item => ({
+        id: item.id,
+        tanggal: item.tanggal,
+        nama: item.karyawan?.nama || "Unknown",
+        divisi: item.karyawan?.divisi || "Unknown",
+        jamMasuk: item.jam_masuk,
+        status: item.status,
+        keterangan: item.keterangan,
+        karyawan_id: item.karyawan_id
+      }));
+      setDataAbsensi(formattedAbsensi);
+
+      // Fetch karyawan untuk dropdown form
+      const { data: karyawanData, error: karyawanError } = await supabase
+        .from("karyawan")
+        .select("id, nama, divisi, status_kerja")
+        .eq("status_kerja", "Aktif");
+
+      if (karyawanError) throw karyawanError;
+      setDataKaryawan(karyawanData || []);
+
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // JADWAL ABSENSI
   const jadwalDivisi = {
@@ -82,37 +83,6 @@ function Absensi() {
       shift: "13:00 - 19:00",
     },
   };
-
-  const dataKaryawan = [
-    {
-      nama: "Rahmat Hidayat",
-      divisi: "Persiapan",
-    },
-    {
-      nama: "Nur Aisyah",
-      divisi: "Persiapan",
-    },
-    {
-      nama: "Siti Aminah",
-      divisi: "Pengolahan",
-    },
-    {
-      nama: "Budi Santoso",
-      divisi: "Pengolahan",
-    },
-    {
-      nama: "Rina Lestari",
-      divisi: "Pemorsian",
-    },
-    {
-      nama: "Agus Pratama",
-      divisi: "Distribusi",
-    },
-    {
-      nama: "Dewi Kartika",
-      divisi: "Pencucian",
-    },
-  ];
 
   // 2. STATE NAVIGASI INTERNAL: 'index' | 'create' | 'edit'
   const [viewMode, setViewMode] = useState("index");
@@ -194,7 +164,7 @@ function Absensi() {
   };
 
   // Handler Aksi Simpan (Create & Edit)
-  const handleSaveData = (e) => {
+  const handleSaveData = async (e) => {
     e.preventDefault();
 
     let finalStatus = formData.tipeStatus;
@@ -225,30 +195,53 @@ function Absensi() {
       finalJamMasuk = "-";
     }
 
+    // Cari ID Karyawan berdasarkan nama yang dipilih
+    const selectedKaryawan = dataKaryawan.find(k => k.nama === formData.nama && k.divisi === formData.divisi);
+    
+    if (!selectedKaryawan && viewMode === "create") {
+       alert("Pegawai tidak ditemukan!");
+       return;
+    }
+
     const payload = {
-      id: formData.id || Date.now(),
       tanggal: formData.tanggal,
-      nama: formData.nama,
-      divisi: formData.divisi,
-      jamMasuk: finalJamMasuk,
+      karyawan_id: selectedKaryawan ? selectedKaryawan.id : formData.karyawan_id,
+      jam_masuk: finalJamMasuk,
       status: finalStatus,
       keterangan,
     };
 
-    if (viewMode === "create") {
-      setDataAbsensi([...dataAbsensi, payload]);
-    } else if (viewMode === "edit") {
-      setDataAbsensi(
-        dataAbsensi.map((item) => (item.id === formData.id ? payload : item)),
-      );
+    try {
+      if (viewMode === "create") {
+        const { error } = await supabase.from("absensi").insert([payload]);
+        if (error) throw error;
+      } else if (viewMode === "edit") {
+        const { error } = await supabase
+          .from("absensi")
+          .update(payload)
+          .eq("id", formData.id);
+        if (error) throw error;
+      }
+      
+      await fetchData();
+      setViewMode("index");
+    } catch (error) {
+      console.error("Error saving data:", error.message);
+      alert("Gagal menyimpan data: " + error.message);
     }
-    setViewMode("index");
   };
 
   // Handler Aksi Hapus Data
-  const handleDeleteData = (id) => {
+  const handleDeleteData = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus data absensi ini?")) {
-      setDataAbsensi(dataAbsensi.filter((item) => item.id !== id));
+      try {
+        const { error } = await supabase.from("absensi").delete().eq("id", id);
+        if (error) throw error;
+        await fetchData();
+      } catch (error) {
+        console.error("Error deleting data:", error.message);
+        alert("Gagal menghapus data: " + error.message);
+      }
     }
   };
 

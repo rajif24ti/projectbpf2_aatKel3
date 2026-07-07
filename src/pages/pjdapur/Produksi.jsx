@@ -1,31 +1,53 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import dataProduksiAwal from "../../data/data-produksi.json";
-import dataSekolah from "../../data/data-sekolah.json";
+import { supabase } from "../../lib/supabaseClient";
 
 function Produksi() {
   // MODE HALAMAN
   const [viewMode, setViewMode] = useState("index");
-  const [dataProduksi, setDataProduksi] = useState(() => {
-    const saved = localStorage.getItem("dataProduksi");
-    return saved ? JSON.parse(saved) : dataProduksiAwal;
-  });
+  const [dataProduksi, setDataProduksi] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [query, setQuery] = useState("");
-
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
   useEffect(() => {
-    console.log("Halaman Produksi berhasil dimuat");
+    fetchProduksi();
   }, []);
 
-  useEffect(() => {
-    console.log(`Jumlah data produksi saat ini: ${dataProduksi.length}`);
-  }, [dataProduksi]);
+  const fetchProduksi = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("produksi")
+        .select(`
+          *,
+          sekolah ( nama )
+        `)
+        .order("tanggal", { ascending: false });
 
-  useEffect(() => {
-    console.log(`Mode aktif: ${viewMode}`);
-  }, [viewMode]);
+      if (error) throw error;
+      
+      const formatted = (data || []).map(item => ({
+        id: item.id,
+        tanggal: item.tanggal,
+        idSekolah: item.sekolah_id,
+        namaSekolah: item.sekolah?.nama || "Unknown",
+        menu: item.menu,
+        porsi: item.porsi,
+        kalori: item.kalori,
+        protein: item.protein,
+        karbohidrat: item.karbohidrat,
+        lemak: item.lemak,
+        serat: item.serat
+      }));
+      setDataProduksi(formatted);
+    } catch (error) {
+      console.error("Error fetching produksi:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -35,14 +57,6 @@ function Produksi() {
     return () => clearTimeout(timeout);
   }, [query]);
 
-  useEffect(() => {
-    localStorage.setItem("dataProduksi", JSON.stringify(dataProduksi));
-  }, [dataProduksi]);
-
-  useEffect(() => {
-    console.log(`Mencari data: ${debouncedQuery}`);
-  }, [debouncedQuery]);
-
   // TOTAL PRODUKSI
   const totalProduksi = dataProduksi.reduce(
     (total, item) => total + Number(item.porsi),
@@ -50,16 +64,13 @@ function Produksi() {
   );
 
   const getNamaSekolah = (idSekolah) => {
-    const sekolah = dataSekolah.find((item) => item.id === Number(idSekolah));
-
-    return sekolah ? sekolah.nama : "Sekolah tidak ditemukan";
+    const item = dataProduksi.find(p => p.idSekolah === idSekolah);
+    return item ? item.namaSekolah : "Sekolah tidak ditemukan";
   };
 
   const filteredProduksi = dataProduksi.filter((item) => {
-    const namaSekolah = getNamaSekolah(item.idSekolah);
-
     return (
-      namaSekolah.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+      item.namaSekolah.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
       (item.menu ?? "").toLowerCase().includes(debouncedQuery.toLowerCase()) ||
       (item.tanggal ?? "").includes(debouncedQuery)
     );
@@ -217,7 +228,7 @@ function Produksi() {
                             to={`/produksi/${item.id}`}
                             className="font-semibold text-violet-600 hover:text-violet-700"
                           >
-                            {getNamaSekolah(item.idSekolah)}
+                            {item.namaSekolah}
                           </Link>
                         </td>
 

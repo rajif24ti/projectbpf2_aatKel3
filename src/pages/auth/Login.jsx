@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const [dataForm, setDataForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -19,55 +20,51 @@ export default function Login() {
     });
   };
 
-  const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
-
-  console.log("Users :", localUsers);
-  console.log("Input :", dataForm);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setError("");
 
-    const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
+    try {
+      // Query tabel users dari Supabase
+      const { data, error: queryError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", dataForm.username.trim())
+        .eq("password", dataForm.password)
+        .single();
 
-    const userFound = localUsers.find(
-      (user) =>
-        user.username.trim() === dataForm.email.trim() &&
-        user.password === dataForm.password,
-    );
-
-    setTimeout(() => {
-      if (!userFound) {
+      if (queryError || !data) {
         setError("Username atau Password salah!");
         setLoading(false);
         return;
       }
 
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", userFound.role);
-      localStorage.setItem("user", JSON.stringify(userFound));
+      // Simpan sesi ke localStorage
+      localStorage.setItem("token", "mbg-session-token");
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("user", JSON.stringify(data));
 
-      switch (userFound.role) {
+      // Redirect berdasarkan role
+      switch (data.role) {
         case "pj_dapur":
           navigate("/dashboard-pj-dapur");
           break;
-
         case "ahli_gizi":
           navigate("/dashboard-ahli-gizi");
           break;
-
         case "pj_sekolah":
           navigate("/dashboard-pj-sekolah");
           break;
-
         default:
           navigate("/login");
       }
-
+    } catch (err) {
+      setError("Terjadi kesalahan. Coba lagi.");
+      console.error(err);
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -95,11 +92,12 @@ export default function Login() {
             <label>Username</label>
             <input
               type="text"
-              name="email"
-              value={dataForm.email}
+              name="username"
+              value={dataForm.username}
               onChange={handleChange}
               className="w-full border rounded-lg px-4 py-2"
               placeholder="Masukkan Username"
+              required
             />
           </div>
 
@@ -112,6 +110,7 @@ export default function Login() {
               onChange={handleChange}
               className="w-full border rounded-lg px-4 py-2"
               placeholder="********"
+              required
             />
           </div>
         </div>
@@ -119,7 +118,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-6 bg-violet-600 text-white rounded-lg py-2 hover:bg-violet-700"
+          className="w-full mt-6 bg-violet-600 text-white rounded-lg py-2 hover:bg-violet-700 disabled:opacity-60"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
