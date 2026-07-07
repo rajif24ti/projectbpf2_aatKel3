@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Outlet } from "react-router-dom"; // Tambahkan Outlet di sini
+import { useLocation, Outlet } from "react-router-dom";
 
-import "../css/style.css"; 
+import "../css/style.css";
 import "../charts/ChartjsConfig";
 
 import Sidebar from "../components/Sidebar";
 import PageHeader from "../components/PageHeader";
-import Banner from "../components/Banner"; 
+import Banner from "../components/Banner";
 
 export default function MainLayout() {
   const location = useLocation();
@@ -20,10 +20,11 @@ export default function MainLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Sidebar tetap ada di setiap halaman dashboard */}
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
+      {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
+      {/* Main content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <PageHeader
           sidebarOpen={sidebarOpen}
@@ -34,10 +35,7 @@ export default function MainLayout() {
         />
 
         <main className="grow">
-          <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            {/* PENTING: <Outlet /> akan merender komponen Dashboard, Absensi, dll. 
-               sesuai dengan rute yang aktif di App.jsx 
-            */}
+          <div className="px-4 sm:px-6 lg:px-8 py-6 w-full max-w-9xl mx-auto">
             <Outlet />
           </div>
         </main>
