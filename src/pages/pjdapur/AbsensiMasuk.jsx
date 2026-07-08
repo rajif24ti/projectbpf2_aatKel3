@@ -6,6 +6,7 @@ function Absensi() {
   const [dataAbsensi, setDataAbsensi] = useState([]);
   const [dataKaryawan, setDataKaryawan] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterDate, setFilterDate] = useState(""); // Default kosong untuk menampilkan semua data, namun bisa difilter
 
   // Fetch Data dari Supabase
   useEffect(() => {
@@ -249,6 +250,11 @@ function Absensi() {
     }
   };
 
+  // Filter data berdasarkan tanggal
+  const filteredAbsensi = filterDate 
+    ? dataAbsensi.filter(item => item.tanggal === filterDate)
+    : dataAbsensi;
+
   return (
     <main className="grow transition-all duration-200">
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -268,24 +274,40 @@ function Absensi() {
           </div>
 
           {viewMode === "index" && (
-            <button
-              onClick={openCreateMode}
-              className="inline-flex items-center justify-center px-4 py-2 bg-violet-500 hover:bg-violet-600 dark:bg-violet-600 dark:hover:bg-violet-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-violet-500/10 active:scale-95 transition-all duration-150"
-            >
-              <svg
-                className="w-4 h-4 mr-2 stroke-current"
-                fill="none"
-                viewBox="0 0 24 24"
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <input
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+                className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition text-sm text-gray-700 dark:text-gray-300 shadow-sm"
+                title="Filter berdasarkan tanggal"
+              />
+              <button
+                onClick={() => setFilterDate("")}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-xl transition"
+                title="Tampilkan Semua"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2.5"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Tambah Absensi
-            </button>
+                Semua
+              </button>
+              <button
+                onClick={openCreateMode}
+                className="inline-flex items-center justify-center px-4 py-2 bg-violet-500 hover:bg-violet-600 dark:bg-violet-600 dark:hover:bg-violet-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-violet-500/10 active:scale-95 transition-all duration-150"
+              >
+                <svg
+                  className="w-4 h-4 mr-2 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Tambah Absensi
+              </button>
+            </div>
           )}
         </div>
 
@@ -308,17 +330,17 @@ function Absensi() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-sm">
-                  {dataAbsensi.length === 0 ? (
+                  {filteredAbsensi.length === 0 ? (
                     <tr>
                       <td
                         colSpan="8"
                         className="p-8 text-center text-gray-400 dark:text-gray-500"
                       >
-                        Tidak ada catatan Absensi Masuk Staff SPPG hari ini.
+                        Tidak ada catatan Absensi Masuk Staff SPPG untuk tanggal ini.
                       </td>
                     </tr>
                   ) : (
-                    dataAbsensi.map((item, index) => (
+                    filteredAbsensi.map((item, index) => (
                       <tr
                         key={item.id}
                         className="text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition"

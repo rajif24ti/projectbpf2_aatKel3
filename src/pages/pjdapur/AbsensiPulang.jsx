@@ -6,6 +6,7 @@ function AbsensiPulang() {
   const [dataKaryawan, setDataKaryawan] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [filterDate, setFilterDate] = useState("");
 
   // JADWAL SHIFT per divisi
   const jadwalDivisi = {
@@ -58,6 +59,11 @@ function AbsensiPulang() {
       setLoading(false);
     }
   };
+
+  // Filter data berdasarkan tanggal
+  const filteredAbsensiPulang = filterDate 
+    ? dataAbsensiPulang.filter(item => item.tanggal === filterDate)
+    : dataAbsensiPulang;
 
   // Filter karyawan berdasarkan divisi yang dipilih di form
   const filteredKaryawan = dataKaryawan.filter(
@@ -254,15 +260,31 @@ function AbsensiPulang() {
           </div>
 
           {viewMode === "index" && (
-            <button
-              onClick={openCreateMode}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold rounded-xl shadow-sm shadow-violet-500/10 active:scale-95 transition-all duration-150 whitespace-nowrap"
-            >
-              <svg className="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
-              Tambah Absensi Pulang
-            </button>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <input
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+                className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none transition text-sm text-gray-700 dark:text-gray-300 shadow-sm"
+                title="Filter berdasarkan tanggal"
+              />
+              <button
+                onClick={() => setFilterDate("")}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-xl transition"
+                title="Tampilkan Semua"
+              >
+                Semua
+              </button>
+              <button
+                onClick={openCreateMode}
+                className="inline-flex items-center justify-center px-4 py-2 bg-rose-500 hover:bg-rose-600 dark:bg-rose-600 dark:hover:bg-rose-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-rose-500/10 active:scale-95 transition-all duration-150"
+              >
+                <svg className="w-4 h-4 mr-2 stroke-current" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Log Pulang
+              </button>
+            </div>
           )}
         </div>
 
@@ -309,14 +331,14 @@ function AbsensiPulang() {
                         Memuat data absensi...
                       </td>
                     </tr>
-                  ) : dataAbsensiPulang.length === 0 ? (
+                  ) : filteredAbsensiPulang.length === 0 ? (
                     <tr>
                       <td colSpan="8" className="p-8 text-center text-gray-400 dark:text-gray-500">
                         Belum ada data absensi pulang.
                       </td>
                     </tr>
                   ) : (
-                    dataAbsensiPulang.map((item, index) => (
+                    filteredAbsensiPulang.map((item, index) => (
                       <tr
                         key={item.id}
                         className="text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition"
