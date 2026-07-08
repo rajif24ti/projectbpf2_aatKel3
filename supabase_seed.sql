@@ -36,14 +36,14 @@ INSERT INTO produksi (tanggal, sekolah_id, menu, porsi, kalori, protein, karbohi
 ('2026-06-15', 3, 'Nasi Ayam Kecap', 185, 640, 29, 79, 17, 5),
 ('2026-06-15', 4, 'Nasi Rendang', 520, 720, 35, 82, 22, 6);
 
--- 5. Insert Data Absensi
-INSERT INTO absensi (tanggal, karyawan_id, jam_masuk, status, keterangan) VALUES
-('2026-05-21', 2, '00:00', 'Hadir', 'Tepat Waktu'),
-('2026-05-21', 3, '00:05', 'Hadir', 'Tepat Waktu'),
-('2026-05-21', 4, '05:30', 'Terlambat', 'Melewati Jam Shift'),
-('2026-05-21', 5, '08:00', 'Hadir', 'Tepat Waktu'),
-('2026-05-21', 1, '19:00', 'Hadir', 'Tepat Waktu'),
-('2026-05-21', 6, '-', 'Izin', 'Izin Tidak Masuk');
+-- 5. Insert Data Absensi (termasuk kolom pulang)
+INSERT INTO absensi (tanggal, karyawan_id, nama, divisi, jam_masuk, jam_pulang, status, status_pulang, keterangan, keterangan_pulang) VALUES
+('2026-05-21', 2, 'Siti Aminah',    'Pengolahan', '00:00', '08:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 3, 'Budi Santoso',   'Pengolahan', '00:05', '08:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 4, 'Rina Lestari',   'Pemorsian',  '05:30', '09:30', 'Terlambat', 'Pulang Cepat',       'Melewati Jam Shift', 'Sebelum Jadwal Selesai'),
+('2026-05-21', 5, 'Agus Pratama',   'Distribusi', '08:00', '17:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 1, 'Rahmat Hidayat', 'Persiapan',  '19:00', '00:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 6, 'Dewi Kartika',   'Pencucian',  '-',     '-',     'Izin',      'Belum Absen',        'Izin Tidak Masuk',   'Belum Melakukan Absensi Pulang');
 
 -- 6. Tabel Kotak Saran
 CREATE TABLE IF NOT EXISTS kotak_saran (

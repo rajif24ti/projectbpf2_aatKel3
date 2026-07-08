@@ -65,6 +65,13 @@ CREATE TABLE IF NOT EXISTS absensi (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
+-- Tambahkan kolom baru jika tabel absensi sudah ada (migrasi aman)
+ALTER TABLE absensi ADD COLUMN IF NOT EXISTS nama VARCHAR(100);
+ALTER TABLE absensi ADD COLUMN IF NOT EXISTS divisi VARCHAR(50);
+ALTER TABLE absensi ADD COLUMN IF NOT EXISTS jam_pulang VARCHAR(5) DEFAULT '-';
+ALTER TABLE absensi ADD COLUMN IF NOT EXISTS status_pulang VARCHAR(50) DEFAULT 'Belum Absen';
+ALTER TABLE absensi ADD COLUMN IF NOT EXISTS keterangan_pulang VARCHAR(100);
+
 -- 6. Tabel Kotak Saran
 CREATE TABLE IF NOT EXISTS kotak_saran (
     id SERIAL PRIMARY KEY,
