@@ -211,3 +211,16 @@ INSERT INTO laporan (tanggal, jenis, keterangan, petugas, status) VALUES
 ('2026-05-19', 'Produksi', 'Produksi 1.200 porsi makanan harian', 'Siti Aminah', 'Selesai'),
 ('2026-05-20', 'Absensi', '13 pegawai hadir, 1 izin, 1 sakit', 'Budi Santoso', 'Selesai'),
 ('2026-05-21', 'Bahan Baku', 'Stok bawang merah mulai menipis', 'Dewi Kartika', 'Perlu Tindak Lanjut');
+
+-- --------------------------------------------------------
+-- BACKFILL: Isi kolom nama & divisi di absensi dari tabel karyawan
+-- Jalankan ini SETELAH ALTER TABLE dan setelah data sudah ada
+-- --------------------------------------------------------
+UPDATE absensi
+SET 
+    nama = k.nama,
+    divisi = k.divisi
+FROM karyawan k
+WHERE absensi.karyawan_id = k.id
+  AND (absensi.nama IS NULL OR absensi.nama = '');
+

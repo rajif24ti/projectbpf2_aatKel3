@@ -15,13 +15,15 @@ function Absensi() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch absensi
+      // Fetch absensi dengan join ke karyawan sebagai fallback
       const { data: absensiData, error: absensiError } = await supabase
         .from("absensi")
         .select(`
           id, 
           tanggal, 
           karyawan_id,
+          nama,
+          divisi,
           jam_masuk, 
           status, 
           keterangan,
@@ -31,12 +33,12 @@ function Absensi() {
 
       if (absensiError) throw absensiError;
 
-      // Transform data for UI
+      // Gunakan kolom nama/divisi langsung dari absensi, fallback ke join relasi karyawan
       const formattedAbsensi = (absensiData || []).map(item => ({
         id: item.id,
         tanggal: item.tanggal,
-        nama: item.karyawan?.nama || "Unknown",
-        divisi: item.karyawan?.divisi || "Unknown",
+        nama: item.nama || item.karyawan?.nama || "-",
+        divisi: item.divisi || item.karyawan?.divisi || "-",
         jamMasuk: item.jam_masuk,
         status: item.status,
         keterangan: item.keterangan,
@@ -195,7 +197,7 @@ function Absensi() {
       finalJamMasuk = "-";
     }
 
-    // Cari ID Karyawan berdasarkan nama yang dipilih
+    // Cari data karyawan berdasarkan nama yang dipilih
     const selectedKaryawan = dataKaryawan.find(k => k.nama === formData.nama && k.divisi === formData.divisi);
     
     if (!selectedKaryawan && viewMode === "create") {
@@ -206,6 +208,8 @@ function Absensi() {
     const payload = {
       tanggal: formData.tanggal,
       karyawan_id: selectedKaryawan ? selectedKaryawan.id : formData.karyawan_id,
+      nama: formData.nama,
+      divisi: formData.divisi,
       jam_masuk: finalJamMasuk,
       status: finalStatus,
       keterangan,
