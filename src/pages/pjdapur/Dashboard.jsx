@@ -1,61 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function Dashboard() {
-  const [dataKaryawan] = useState([
-    { id: 1, nama: "Siti Aminah", status: "Hadir" },
-    { id: 2, nama: "Budi Santoso", status: "Hadir" },
-    { id: 3, nama: "Rina Lestari", status: "Izin" },
-    { id: 4, nama: "Agus Pratama", status: "Hadir" },
-    { id: 5, nama: "Dewi Kartika", status: "Sakit" },
-  ]);
+  const [dataKaryawan, setDataKaryawan] = useState([]);
+  const [dataSekolah, setDataSekolah] = useState([]);
+  const [dataProduksi, setDataProduksi] = useState([]);
+  const [laporan, setLaporan] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [dataSekolah] = useState([
-    { id: 1, nama: "SD Negeri 01", jumlahSiswa: 350 },
-    { id: 2, nama: "SD Negeri 02", jumlahSiswa: 280 },
-    { id: 3, nama: "SMP Negeri 05", jumlahSiswa: 420 },
-  ]);
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
-  const [dataProduksi] = useState([
-    {
-      id: 1,
-      tanggal: "24 Juni 2026",
-      menu: "Nasi Ayam",
-      jumlah: 1200,
-      status: "Selesai",
-    },
-    {
-      id: 2,
-      tanggal: "24 Juni 2026",
-      menu: "Nasi Telur",
-      jumlah: 950,
-      status: "Proses",
-    },
-    {
-      id: 3,
-      tanggal: "24 Juni 2026",
-      menu: "Nasi Ikan",
-      jumlah: 1000,
-      status: "Selesai",
-    },
-  ]);
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const [
+        { data: karyawanData },
+        { data: absensiData },
+        { data: sekolahData },
+        { data: produksiData },
+        { data: laporanData }
+      ] = await Promise.all([
+        supabase.from("karyawan").select("*").eq("status_kerja", "Aktif"),
+        supabase.from("absensi").select("*").order("tanggal", { ascending: false }),
+        supabase.from("sekolah").select("*"),
+        supabase.from("produksi").select("*").order("tanggal", { ascending: false }),
+        supabase.from("laporan").select("*").order("tanggal", { ascending: false }).limit(5)
+      ]);
 
-  const [laporan] = useState([
-    {
-      id: 1,
-      nama: "Laporan Produksi",
-      status: "Selesai",
-    },
-    {
-      id: 2,
-      nama: "Laporan Absensi",
-      status: "Menunggu",
-    },
-    {
-      id: 3,
-      nama: "Laporan Operasional",
-      status: "Selesai",
-    },
-  ]);
+      const processedKaryawan = (karyawanData || []).map((k) => {
+        const absen = (absensiData || []).find((a) => a.karyawan_id === k.id);
+        return {
+          id: k.id,
+          nama: k.nama,
+          status: absen ? absen.status : "Belum Hadir"
+        };
+      });
+      setDataKaryawan(processedKaryawan);
+
+      setDataSekolah((sekolahData || []).map((s) => ({
+        id: s.id,
+        nama: s.nama,
+        jumlahSiswa: s.jumlah_siswa || s.jumlahSiswa || 0,
+      })));
+
+      setDataProduksi((produksiData || []).map((p) => ({
+        id: p.id,
+        tanggal: p.tanggal,
+        menu: p.menu,
+        jumlah: p.porsi,
+        status: "Selesai",
+      })));
+
+      setLaporan(laporanData || []);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const totalKaryawan = dataKaryawan.length;
 

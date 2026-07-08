@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabaseClient';
 
 function Laporan() {
   // 1. STATE UTAMA: Menyimpan database log rekap laporan pengolahan
-  const [dataLaporan, setDataLaporan] = useState([
-    { id: 1, tanggal: '2025-01-01', jenis: 'Produksi', keterangan: 'Produksi 1.200 porsi makanan', petugas: 'Siti Aminah', status: 'Selesai' },
-    { id: 2, tanggal: '2025-01-02', jenis: 'Absensi', keterangan: '13 pegawai hadir, 1 izin, 1 sakit', petugas: 'Budi Santoso', status: 'Selesai' },
-    { id: 3, tanggal: '2025-01-03', jenis: 'Bahan Baku', keterangan: 'Stok beras dan ayam dalam kondisi aman', petugas: 'Rina Lestari', status: 'Selesai' },
-    { id: 4, tanggal: '2025-01-04', jenis: 'Produksi', keterangan: 'Produksi 1.250 porsi makanan', petugas: 'Agus Pratama', status: 'Selesai' },
-    { id: 5, tanggal: '2025-01-05', jenis: 'Bahan Baku', keterangan: 'Stok bawang merah mulai menipis', petugas: 'Dewi Kartika', status: 'Perlu Tindak Lanjut' },
-    { id: 6, tanggal: '2025-01-06', jenis: 'Absensi', keterangan: '12 pegawai hadir, 2 terlambat, 1 izin', petugas: 'Andi Saputra', status: 'Selesai' },
-    { id: 7, tanggal: '2025-01-07', jenis: 'Produksi', keterangan: 'Produksi 1.190 porsi makanan', petugas: 'Nur Hasanah', status: 'Selesai' },
-    { id: 8, tanggal: '2025-01-08', jenis: 'Bahan Baku', keterangan: 'Stok kol dan buncis mulai menipis', petugas: 'Joko Prasetyo', status: 'Perlu Tindak Lanjut' },
-    { id: 9, tanggal: '2025-01-09', jenis: 'Produksi', keterangan: 'Produksi 1.230 porsi makanan', petugas: 'Maya Sari', status: 'Selesai' },
-    { id: 10, tanggal: '2025-01-10', jenis: 'Absensi', keterangan: '14 pegawai hadir dan 1 sakit', petugas: 'Fajar Nugroho', status: 'Selesai' },
-    { id: 11, stroke: '2025-01-11', jenis: 'Bahan Baku', keterangan: 'Minyak goreng dan telur tersedia', petugas: 'Lina Marlina', status: 'Selesai' },
-    { id: 12, tanggal: '2025-01-12', jenis: 'Produksi', keterangan: 'Produksi 1.140 porsi makanan', petugas: 'Teguh Rahman', status: 'Selesai' },
-    { id: 13, tanggal: '2025-01-13', jenis: 'Absensi', keterangan: '15 pegawai hadir lengkap', petugas: 'Fitri Handayani', status: 'Selesai' },
-    { id: 14, tanggal: '2025-01-14', jenis: 'Produksi', keterangan: 'Produksi 1.260 porsi makanan', petugas: 'Rudi Hartono', status: 'Selesai' },
-    { id: 15, tanggal: '2025-01-15', jenis: 'Bahan Baku', keterangan: 'Stok bawang putih perlu ditambah', petugas: 'Sri Wahyuni', status: 'Perlu Tindak Lanjut' },
-  ]);
+  const [dataLaporan, setDataLaporan] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLaporan();
+  }, []);
+
+  const fetchLaporan = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('laporan')
+        .select('*')
+        .order('tanggal', { ascending: false });
+
+      if (error) throw error;
+      setDataLaporan(data || []);
+    } catch (error) {
+      console.error('Error fetching laporan:', error);
+      alert('Gagal mengambil data laporan: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 2. STATE NAVIGASI INTERNAL: 'index' | 'create' | 'edit'
   const [viewMode, setViewMode] = useState('index');
@@ -85,31 +93,52 @@ function Laporan() {
   };
 
   // Handler Aksi Simpan Data
-  const handleSaveData = (e) => {
+  const handleSaveData = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      id: formData.id || Date.now(),
-      tanggal: formData.tanggal,
-      jenis: formData.jenis,
-      keterangan: formData.keterangan,
-      petugas: formData.petugas,
-      status: formData.status
-    };
-
-    if (viewMode === 'create') {
-      setDataLaporan([...dataLaporan, payload]);
-    } else if (viewMode === 'edit') {
-      setDataLaporan(dataLaporan.map((item) => (item.id === formData.id ? payload : item)));
+    try {
+      if (viewMode === 'create') {
+        const payload = {
+          tanggal: formData.tanggal,
+          jenis: formData.jenis,
+          keterangan: formData.keterangan,
+          petugas: formData.petugas,
+          status: formData.status
+        };
+        const { error } = await supabase.from('laporan').insert([payload]);
+        if (error) throw error;
+      } else if (viewMode === 'edit') {
+        const payload = {
+          tanggal: formData.tanggal,
+          jenis: formData.jenis,
+          keterangan: formData.keterangan,
+          petugas: formData.petugas,
+          status: formData.status
+        };
+        const { error } = await supabase.from('laporan').update(payload).eq('id', formData.id);
+        if (error) throw error;
+      }
+      
+      alert(viewMode === 'create' ? 'Laporan berhasil ditambahkan!' : 'Laporan berhasil diupdate!');
+      setViewMode('index');
+      fetchLaporan();
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert('Gagal menyimpan data: ' + error.message);
     }
-
-    setViewMode('index');
   };
 
   // Handler Aksi Hapus Laporan
-  const handleDeleteData = (id) => {
+  const handleDeleteData = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus data rekap laporan ini?")) {
-      setDataLaporan(dataLaporan.filter((item) => item.id !== id));
+      try {
+        const { error } = await supabase.from('laporan').delete().eq('id', id);
+        if (error) throw error;
+        alert('Laporan berhasil dihapus!');
+        fetchLaporan();
+      } catch (error) {
+        console.error('Error deleting data:', error);
+        alert('Gagal menghapus data: ' + error.message);
+      }
     }
   };
 
@@ -190,7 +219,13 @@ function Laporan() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-sm">
-                  {dataLaporan.length === 0 ? (
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-gray-500">
+                        Memuat data laporan...
+                      </td>
+                    </tr>
+                  ) : dataLaporan.length === 0 ? (
                     <tr>
                       <td colSpan="7" className="p-8 text-center text-gray-400 dark:text-gray-500">
                         Belum ada dokumen rekaman laporan pengolahan.

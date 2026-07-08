@@ -54,9 +54,14 @@ CREATE TABLE IF NOT EXISTS absensi (
     id SERIAL PRIMARY KEY,
     tanggal DATE NOT NULL,
     karyawan_id INTEGER REFERENCES karyawan(id) ON DELETE CASCADE,
+    nama VARCHAR(100),
+    divisi VARCHAR(50),
     jam_masuk VARCHAR(5) DEFAULT '-',
+    jam_pulang VARCHAR(5) DEFAULT '-',
     status VARCHAR(20) NOT NULL,
+    status_pulang VARCHAR(50) DEFAULT 'Belum Absen',
     keterangan VARCHAR(100),
+    keterangan_pulang VARCHAR(100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
@@ -72,6 +77,17 @@ CREATE TABLE IF NOT EXISTS kotak_saran (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
+-- 7. Tabel Laporan
+CREATE TABLE IF NOT EXISTS laporan (
+    id SERIAL PRIMARY KEY,
+    tanggal DATE NOT NULL,
+    jenis VARCHAR(50) NOT NULL,
+    keterangan TEXT NOT NULL,
+    petugas VARCHAR(100) NOT NULL,
+    status VARCHAR(50) DEFAULT 'Selesai',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
 -- --------------------------------------------------------
 -- BAGIAN 2: ROW LEVEL SECURITY (RLS)
 -- WAJIB agar frontend React via Anon Key bisa mengakses data.
@@ -84,6 +100,7 @@ ALTER TABLE karyawan ENABLE ROW LEVEL SECURITY;
 ALTER TABLE produksi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE absensi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kotak_saran ENABLE ROW LEVEL SECURITY;
+ALTER TABLE laporan ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Izinkan semua operasi CRUD untuk public/anon role
 DROP POLICY IF EXISTS "Allow all for anon" ON users;
@@ -92,6 +109,7 @@ DROP POLICY IF EXISTS "Allow all for anon" ON karyawan;
 DROP POLICY IF EXISTS "Allow all for anon" ON produksi;
 DROP POLICY IF EXISTS "Allow all for anon" ON absensi;
 DROP POLICY IF EXISTS "Allow all for anon" ON kotak_saran;
+DROP POLICY IF EXISTS "Allow all for anon" ON laporan;
 
 CREATE POLICY "Allow all for anon" ON users        FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON sekolah      FOR ALL TO anon USING (true) WITH CHECK (true);
@@ -99,13 +117,14 @@ CREATE POLICY "Allow all for anon" ON karyawan     FOR ALL TO anon USING (true) 
 CREATE POLICY "Allow all for anon" ON produksi     FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON absensi      FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON kotak_saran  FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all for anon" ON laporan      FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- --------------------------------------------------------
 -- BAGIAN 3: SEEDER DATA (KHUSUS WILAYAH PEKANBARU)
 -- --------------------------------------------------------
 
 -- Hapus data lama agar tidak duplikat jika dijalankan ulang
-TRUNCATE TABLE kotak_saran, absensi, produksi RESTART IDENTITY CASCADE;
+TRUNCATE TABLE laporan, kotak_saran, absensi, produksi RESTART IDENTITY CASCADE;
 DELETE FROM karyawan;
 DELETE FROM sekolah;
 DELETE FROM users;
@@ -145,13 +164,13 @@ INSERT INTO produksi (tanggal, sekolah_id, menu, porsi, kalori, protein, karbohi
 ('2026-06-15', 4, 'Nasi Rendang',       550, 720, 35, 82, 22, 6);
 
 -- 5. Data Absensi Karyawan
-INSERT INTO absensi (tanggal, karyawan_id, jam_masuk, status, keterangan) VALUES
-('2026-05-21', 2, '00:00', 'Hadir',     'Tepat Waktu'),
-('2026-05-21', 3, '00:05', 'Hadir',     'Tepat Waktu'),
-('2026-05-21', 4, '05:30', 'Terlambat', 'Melewati Jam Shift'),
-('2026-05-21', 5, '08:00', 'Hadir',     'Tepat Waktu'),
-('2026-05-21', 1, '19:00', 'Hadir',     'Tepat Waktu'),
-('2026-05-21', 6, '-',     'Izin',      'Izin Tidak Masuk');
+INSERT INTO absensi (tanggal, karyawan_id, nama, divisi, jam_masuk, jam_pulang, status, status_pulang, keterangan, keterangan_pulang) VALUES
+('2026-05-21', 2, 'Siti Aminah',    'Pengolahan', '00:00', '08:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 3, 'Budi Santoso',   'Pengolahan', '00:05', '08:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 4, 'Rina Lestari',   'Pemorsian',  '05:30', '09:30', 'Terlambat', 'Pulang Cepat',       'Melewati Jam Shift', 'Sebelum Jadwal Selesai'),
+('2026-05-21', 5, 'Agus Pratama',   'Distribusi', '08:00', '17:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 1, 'Rahmat Hidayat', 'Persiapan',  '19:00', '00:00', 'Hadir',     'Pulang Tepat Waktu', 'Tepat Waktu',        'Sesuai Jadwal Kerja'),
+('2026-05-21', 6, 'Dewi Kartika',   'Pencucian',  '-',     '-',     'Izin',      'Belum Absen',        'Izin Tidak Masuk',   'Belum Melakukan Absensi Pulang');
 
 -- 6. Data Kotak Saran dari Sekolah Pekanbaru
 INSERT INTO kotak_saran (sekolah_nama, kategori, subjek, isi, tanggal, status) VALUES
@@ -179,3 +198,9 @@ INSERT INTO kotak_saran (sekolah_nama, kategori, subjek, isi, tanggal, status) V
   '2026-05-19',
   'Sudah Dibaca'
 );
+
+-- 7. Data Laporan
+INSERT INTO laporan (tanggal, jenis, keterangan, petugas, status) VALUES
+('2026-05-19', 'Produksi', 'Produksi 1.200 porsi makanan harian', 'Siti Aminah', 'Selesai'),
+('2026-05-20', 'Absensi', '13 pegawai hadir, 1 izin, 1 sakit', 'Budi Santoso', 'Selesai'),
+('2026-05-21', 'Bahan Baku', 'Stok bawang merah mulai menipis', 'Dewi Kartika', 'Perlu Tindak Lanjut');
